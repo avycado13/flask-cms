@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% from "bootstrap_wtf.html" import quick_form, form_field %}
+{% block title %}Edit Post{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1>Edit Post</h1>
+        <br>
+        <br>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2>Edit Post</h2>
+            </div>
+            <div class="card-body">
+                {{ quick_form(edit_form) }}
+            </div>
+        </div>
+
+        <a href="{{ url_for('main.view_post', blog_id=blog.id, post_id=post.id) }}" class="btn btn-outline-primary mt-3">Back to Post</a>
+    </div>
+</div> 
+{% endblock %}

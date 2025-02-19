@@ -1,12 +1,14 @@
 {% extends "base.html" %}
 {% from "bootstrap_wtf.html" import quick_form, form_field %}
-{% block title %}Admin Panel - Flask CMS{% endblock %}
+{% block title %}Admin Panel - {{ blog.title }}{% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col-md-12">
         <h1>Admin Panel</h1>
-        
+        <br>
+        <br>
+
         <!-- Create Form -->
         <div class="card mb-4">
             <div class="card-header">
