@@ -1,7 +1,7 @@
 from app.extensions import db
 from flask_security.models import fsqla_v3 as fsqla
 from flask_security import UserMixin, RoleMixin, WebAuthnMixin, AsaList
-
+import secrets
 fsqla.FsModels.set_db_info(db)
 
 roles_users = db.Table(
@@ -11,6 +11,8 @@ roles_users = db.Table(
     db.Column("role_id", db.Integer(), db.ForeignKey("role.id")),
     extend_existing=True,
 )
+
+
 class Blog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(150), nullable=False)
@@ -19,11 +21,12 @@ class Blog(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     user = db.relationship("User", backref="blogs")
 
+
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(150), nullable=False)
     content = db.Column(db.Text, nullable=False)
-    blog_id = db.Column(db.Integer, db.ForeignKey("blog.id"))   
+    blog_id = db.Column(db.Integer, db.ForeignKey("blog.id"))
 
 
 class WebAuthn(db.Model, fsqla.FsWebAuthnMixin):
@@ -40,7 +43,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255))
     active = db.Column(db.Boolean(), nullable=False)
-    fs_uniquifier = db.Column(db.String(64), unique=True, nullable=False)
+    fs_uniquifier = db.Column(db.String(64), unique=True, nullable=False, default=lambda: secrets.token_urlsafe(32))
     fs_webauthn_user_handle = db.Column(db.String(64), unique=True, nullable=True)
     last_login_at = db.Column(db.DateTime())
     current_login_at = db.Column(db.DateTime())

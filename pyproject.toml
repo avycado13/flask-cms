@@ -15,5 +15,6 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "pytest>=8.3.4",
     "types-bleach>=6.2.0.20241123",
 ]

@@ -12,7 +12,7 @@ class Config:
     DOCKER_HOST: str = "localhost:2376"
     CLOUDSHELL_PREFIX: str = "/cloudshell"
     SECRET_KEY = secrets.token_urlsafe()
-    SECURITY_PASSWORD_SALT = str(secrets.SystemRandom().getrandbits(128))
+    SECURITY_PASSWORD_SALT = 213691981621818227987771034862335535908
     DEFAULT_IMAGE = "ghcr.io/aoudiamoncef/ubuntu-sshd/ubuntu-sshd:latest"
     # Change for production env
     SQLALCHEMY_DATABASE_URI = "sqlite:///test.db"
@@ -43,3 +43,6 @@ class Config:
 
 class TestingConfig(Config):
     RQ_CONNECTION_CLASS = "fakeredis.FakeStrictRedis"
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
+    WTF_CSRF_ENABLED = False

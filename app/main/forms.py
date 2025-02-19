@@ -15,10 +15,12 @@ class PostActionForm(FlaskForm):
     edit = SubmitField("Edit")
     delete = SubmitField("Delete")
 
+
 class BlogForm(FlaskForm):
     title = StringField("Title", validators=[DataRequired()])
     description = TextAreaField("Description")
     submit = SubmitField("Create Blog")
+
 
 class BlogActionForm(FlaskForm):
     blog_id = HiddenField("Blog ID", validators=[DataRequired()])
