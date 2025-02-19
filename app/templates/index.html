@@ -10,7 +10,7 @@
                     <div class="card-body">
                         <h3 class="card-title">{{ blog.title }}</h3>
                         <p class="card-text">{{ blog.description[:100] }}...</p>
-                        <a href="{{ url_for('main.blog_view', blog_id=blog.id) }}" class="btn btn-primary">View Blog</a>
+                        <a href="{{ url_for('main.view_blog', blog_id=blog.id) }}" class="btn btn-primary">View Blog</a>
                     </div>
                 </div>
             {% endfor %}

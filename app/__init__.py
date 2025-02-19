@@ -1,4 +1,5 @@
-from flask import Flask, request, current_app
+import os
+from flask import Flask, request, current_app,send_from_directory
 from app.extensions import db, migrate, csrf, babel, security
 from flask_security import (
     SQLAlchemyUserDatastore,
@@ -23,9 +24,15 @@ def create_app(config_class=Config):
     user_datastore = SQLAlchemyUserDatastore(db, User, Role, WebAuthn)
     security.init_app(app, user_datastore)
 
+    @app.route('/favicon.ico')
+    def favicon():
+        return send_from_directory(os.path.join(app.root_path, 'static'),
+                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
     from app.main import bp as main_bp
 
     app.register_blueprint(main_bp)
+
     with app.app_context():
         db.create_all()
     return app

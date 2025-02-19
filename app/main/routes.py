@@ -5,6 +5,7 @@ from app.main import bp
 from app.main.forms import PostForm, PostActionForm, BlogForm, BlogActionForm
 from flask_security import auth_required, current_user
 import bleach
+import os
 
 
 @bp.route("/")
@@ -12,9 +13,8 @@ def index():
     blogs = Blog.query.all()
     return render_template("index.html", blogs=blogs, current_user=current_user)
 
-
 @bp.route("/blog/<int:blog_id>")
-def blog_view(blog_id: int):
+def view_blog(blog_id: int):
     blog = Blog.query.get_or_404(blog_id)
     # Use the relationship defined in the Blog model
     posts = blog.posts
@@ -25,8 +25,9 @@ def blog_view(blog_id: int):
 
 @bp.route("/post/<int:post_id>")
 def view_post(post_id: int):
-    page = Post.query.get_or_404(post_id)
-    return render_template("page.html", page=page, current_user=current_user)
+    post = Post.query.get_or_404(post_id)
+    blog = post.blog
+    return render_template("view_post.html", post=post, blog=blog,current_user=current_user)
 
 
 @bp.route("/blog_admin/<int:blog_id>", methods=["GET", "POST"])
@@ -36,7 +37,7 @@ def blog_admin(blog_id: int):
     actions_form = PostActionForm()
 
     if create_form.validate_on_submit():
-        content = bleach.clean(create_form.content.data)
+        content = bleach.clean(create_form.content.data, tags=["p", "strong", "em", "u", "h1", "h2", "h3", "h4", "h5", "h6", "a", "img", "ul", "ol", "li"])
         title = bleach.clean(create_form.title.data)
         new_page = Post(title=title, content=content, blog_id=blog_id)
         db.session.add(new_page)
@@ -45,23 +46,25 @@ def blog_admin(blog_id: int):
         return redirect(url_for("main.index"))
     if actions_form.validate_on_submit():
         if actions_form.delete.data:
-            page = Post.query.get_or_404(actions_form.page_id.data)
+            page = Post.query.get_or_404(actions_form.post_id.data)
             db.session.delete(page)
             db.session.commit()
             flash("Page deleted successfully!", "success")
             return redirect(url_for("main.index"))
         if actions_form.edit.data:
             page = Post.query.get_or_404(actions_form.page_id.data)
-            return redirect(url_for("main.edit_page", page_id=page.id))
+            return redirect(url_for("main.edit_post", page_id=page.id))
         if actions_form.view.data:
             page = Post.query.get_or_404(actions_form.page_id.data)
             return redirect(url_for("main.view_post", page_id=page.id))
-    posts = Post.query.filter_by(blog_id=blog_id).all()
+    blog = Blog.query.get_or_404(blog_id)
+    posts = blog.posts
     if current_user == Blog.query.get_or_404(blog_id).user:
         return render_template(
             "blog_admin.html",
             create_form=create_form,
             actions_form=actions_form,
+            blog=blog,
             posts=posts,
             current_user=current_user,
         )
@@ -70,18 +73,18 @@ def blog_admin(blog_id: int):
         return redirect(url_for("main.index"))
 
 
-@bp.route("/edit_page/<int:post_id>", methods=["GET", "POST"])
+@bp.route("/edit_post/<int:post_id>", methods=["GET", "POST"])
 @auth_required()
-def edit_page(post_id: int):
+def edit_post(post_id: int):
     page = Post.query.get_or_404(post_id)
-    form = PostForm(obj=page)
-    if form.validate_on_submit():
-        page.title = form.title.data
-        page.content = form.content.data
+    edit_form = PostForm(obj=page)
+    if edit_form.validate_on_submit():
+        page.title = edit_form.title.data
+        page.content = edit_form.content.data
         db.session.commit()
-        flash("Page updated successfully!", "success")
+        flash("Post updated successfully!", "success")
         return redirect(url_for("main.index"))
-    return render_template("edit_page.html", form=form, page=page)
+    return render_template("edit_post.html", edit_form=edit_form, page=page)
 
 
 @bp.route("/admin", methods=["GET", "POST"])
@@ -111,7 +114,7 @@ def admin():
             return redirect(url_for("main.edit_blog", blog_id=blog.id))
         if actions_form.view.data:
             blog = Blog.query.get_or_404(actions_form.blog_id.data)
-            return redirect(url_for("main.blog_view", blog_id=blog.id))
+            return redirect(url_for("main.view_blog", blog_id=blog.id))
     blogs = Blog.query.filter_by(user=current_user).all()
     return render_template(
         "admin.html",

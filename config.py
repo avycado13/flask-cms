@@ -12,8 +12,7 @@ class Config:
     DOCKER_HOST: str = "localhost:2376"
     CLOUDSHELL_PREFIX: str = "/cloudshell"
     SECRET_KEY = secrets.token_urlsafe()
-    SECURITY_PASSWORD_SALT = 213691981621818227987771034862335535908
-    DEFAULT_IMAGE = "ghcr.io/aoudiamoncef/ubuntu-sshd/ubuntu-sshd:latest"
+    SECURITY_PASSWORD_SALT = str(213691981621818227987771034862335535908)
     # Change for production env
     SQLALCHEMY_DATABASE_URI = "sqlite:///test.db"
     DEBUG = True

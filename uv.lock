@@ -274,6 +274,7 @@ dependencies = [
     { name = "flask-migrate" },
     { name = "flask-security", extra = ["common", "mfa"] },
     { name = "flask-sqlalchemy" },
+    { name = "markdown" },
     { name = "setuptools" },
 ]
 
@@ -281,6 +282,7 @@ dependencies = [
 dev = [
     { name = "pytest" },
     { name = "types-bleach" },
+    { name = "types-passlib" },
 ]
 
 [package.metadata]
@@ -290,6 +292,7 @@ requires-dist = [
     { name = "flask-migrate", specifier = ">=4.1.0" },
     { name = "flask-security", extras = ["mfa", "common"], specifier = ">=5.6.0" },
     { name = "flask-sqlalchemy", specifier = ">=3.1.1" },
+    { name = "markdown", specifier = ">=3.7" },
     { name = "setuptools", specifier = ">=75.8.0" },
 ]
 
@@ -297,6 +300,7 @@ requires-dist = [
 dev = [
     { name = "pytest", specifier = ">=8.3.4" },
     { name = "types-bleach", specifier = ">=6.2.0.20241123" },
+    { name = "types-passlib", specifier = ">=1.7.7.20241221" },
 ]
 
 [[package]]
@@ -494,6 +498,15 @@ wheels = [
 ]
 
 [[package]]
+name = "markdown"
+version = "3.7"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/54/28/3af612670f82f4c056911fbbbb42760255801b3068c48de792d354ff4472/markdown-3.7.tar.gz", hash = "sha256:2ae2471477cfd02dbbf038d5d9bc226d40def84b4fe2986e49b59b6b472bbed2", size = 357086 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/3f/08/83871f3c50fc983b88547c196d11cf8c3340e37c32d2e9d6152abe2c61f7/Markdown-3.7-py3-none-any.whl", hash = "sha256:7eb6df5690b81a1d7942992c97fad2938e956e79df20cbc6186e9c3a77b1c803", size = 106349 },
+]
+
+[[package]]
 name = "markupsafe"
 version = "3.0.2"
 source = { registry = "https://pypi.org/simple" }
@@ -663,6 +676,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/b6/9d/f6fbcc8246f5e46845b4f989c4e17e6fb3ce572f7065b185e515bf8a3be7/types-html5lib-1.1.11.20241018.tar.gz", hash = "sha256:98042555ff78d9e3a51c77c918b1041acbb7eb6c405408d8a9e150ff5beccafa", size = 11370 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ba/7c/f862b1dc31268ef10fe95b43dcdf216ba21a592fafa2d124445cd6b92e93/types_html5lib-1.1.11.20241018-py3-none-any.whl", hash = "sha256:3f1e064d9ed2c289001ae6392c84c93833abb0816165c6ff0abfc304a779f403", size = 17292 },
+]
+
+[[package]]
+name = "types-passlib"
+version = "1.7.7.20241221"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d9/65/2af3d80436091cf59f06864ca2780499ab14a85ee06a6255bc653ad76913/types_passlib-1.7.7.20241221.tar.gz", hash = "sha256:c7e7d2d836aef2ef26a650110fc89cff896163767aebd8f5d6d5b2675e460173", size = 23128 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/18/71/759a7c7f679ea041c06fca673e29e3ee09fe37fb12176bfa1d29826e6255/types_passlib-1.7.7.20241221-py3-none-any.whl", hash = "sha256:2376ac4e4b6c179205e987c28d77df9cceba1ebb1f79cfa23623a9cc581dde07", size = 37998 },
 ]
 
 [[package]]
