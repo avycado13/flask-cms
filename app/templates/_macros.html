@@ -1,0 +1,99 @@
+{% macro post_navbar(blog_id) %}
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <button class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active"
+                           aria-current="page"
+                           href="{{ url_for('main.view_blog',blog_id=blog_id) }}">{{ _("Home") }}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           href="{{ url_for('main.view_blog',blog_id=blog_id) }}">{{ _("Blog") }}</a>
+                    </li>
+                    {% if g.search_form %}
+                        <form class="navbar-form navbar-left"
+                              method="get"
+                              action="{{ url_for('main.search') }}">
+                            <div class="form-group">
+                                {{ g.search_form.q(size=20, class='form-control',
+                                                                placeholder=g.search_form.q.label.text) }}
+                            </div>
+                        </form>
+                    {% endif %}
+                </ul>
+                </div>
+            </div>
+    </nav>
+    <br>
+    <br>
+    <br>
+{% endmacro %}
+{% macro blog_navbar(blog_id) %}
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <button class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#pill-about">{{ _("Home") }}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#pill-posts">{{ _("Blog") }}</a>
+                    </li>
+                    {% if g.search_form %}
+                        <form class="navbar-form navbar-left"
+                            method="get"
+                            action="{{ url_for('main.search') }}">
+                            <div class="form-group">
+                                {{ g.search_form.q(size=20, class='form-control',
+                                                                    placeholder=g.search_form.q.label.text) }}
+                            </div>
+                        </form>
+                    {% endif %}
+                </ul>
+                </div>
+                </div>
+            </div>
+    </nav>
+    <br>
+    <br>
+    <br>
+{% endmacro %}
+{% macro downstyle(content, start_num) %}
+    {% set new_content = content %}
+    {% for i in range(5 if start_num == 1 else 6, start_num - 1, -1) %}
+        {% set old_tag = 'h' ~ i %}
+        {% set new_tag = 'h' ~ (i + 1) %}
+        {% set new_content = new_content.replace('<' ~ old_tag, '<' ~ new_tag).replace('</' ~ old_tag, '</' ~ new_tag) %}
+    {% endfor %}
+    {{ new_content | safe }}
+{% endmacro %}
+{% macro blog_footer(blog_id) %}
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container">
+        <span class="text-muted">
+            <a href="{{ url_for('main.blog_rss', blog_id=blog_id) }}">{{ _("RSS Feed") }}</a> | 
+            {{ _("Hosted with Flask CMS") }}
+        </span>
+        </div>
+    </footer>
+{% endmacro %}
+

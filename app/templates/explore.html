@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Flask CMS{% endblock title%}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            {% if blogs %}
+                {% for blog in blogs %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h3 class="card-title">{{ blog.title }}</h3>
+                            <p class="card-text">{{ blog.description[:100] }}...</p>
+                            <a href="{{ url_for('main.view_blog', blog_id=blog.id) }}"
+                               class="btn btn-primary">View Blog</a>
+                        </div>
+                    </div>
+                {% endfor %}
+                <nav aria-label="Blogs navigation">
+                    <ul class="pagination">
+                        {% if prev_url %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ prev_url }}">Previous</a>
+                            </li>
+                        {% endif %}
+                        {% if next_url %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ next_url }}">Next</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% else %}
+                <p>No blogs created yet.</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

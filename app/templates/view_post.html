@@ -1,17 +1,60 @@
 {% extends "base.html" %}
-{% from "macros.html" import blog_navbar %}
-
-{% block title %}{{ post.title }} - {{blog.title}}{% endblock %}
-
+{% from "_macros.html" import post_navbar, downstyle,blog_footer %}
+{% from "bootstrap_wtf.html" import quick_form, form_field %}
+{% block title %} {{ post.title }} - {{ blog.title }} {% endblock title%}
 {% block content %}
-{{ blog_navbar(blog.id) }}
-<div class="row">
-    <div class="col-md-12">
-        <a href="{{ url_for('main.view_blog',blog_id=blog.id) }}" class="btn btn-link mb-3">← Back to Blog</a>
-        <h1>{{ post.title }}</h1>
-        <div class="content">
-            {{ post.content | safe }}
+    {{ post_navbar(blog.id) }}
+    <div class="row">
+        <div class="col-md-12">
+            <a href="{{ url_for('main.view_blog',blog_id=blog.id) }}"
+               class="btn btn-link mb-3">← {{ _("Back to Blog") }}</a>
+            <h1>{{ post.title }}</h1>
+            <p>
+                By <a href="{{ url_for('main.view_user',username=post.author.username) }}"
+    class="btn btn-link mb-3">{{ post.author.username }}</a>
+            </p>
+            {{ moment(post.created_at).format('LLL') }}
+            {% if post.updated_at %}
+                {% if moment(post.updated_at).format('LLL') != moment(post.created_at).format('LLL') %}
+                    <p>{{ _(" Last Updated at") }} {{ moment(post.updated_at).format('LLL') }}</p>
+                {% endif %}
+            {% endif %}
+            <hr />
+            <div class="content">{{ downstyle(post.content,1) }}</div>
+        </div>
+        <br>
+        <br>
+        <div class="col-md-12">
+            <hr />
+            <div class="class">
+                {% if current_user.is_authenticated %}
+                    <h3>{{ _("Add a Comment") }}</h3>
+                    {{ quick_form(comment_form) }}
+                {% else %}
+                    <p>{{ _("Please login to add a comment.") }}</p>
+                {% endif %}
+                <hr />
+            </div>
+            <br>
+            <br>
+            <h3>{{ _("Comments") }}</h3>
+            <br>
+            <br>
+
+            {% if comments %}
+                {% for comment in comments %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <a href="{{ url_for('main.view_user',username=comment.user.username) }}">{{ comment.user.username }}</a>
+                            <p>{{ moment(comment.created_at).format('LLL') }}</p>
+                            <p>{{ comment.content }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>{{ _("No comments yet.") }}</p>
+            {% endif %}
         </div>
     </div>
-</div>
-{% endblock %}
+    {{ blog_footer( blog.id ) }}
+    {% endblock content%}

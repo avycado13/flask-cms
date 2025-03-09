@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+  <title>{{ blog.title }}</title>
+  <atom:link href="{{url_for('main.blog_rss',blog_id=blog.id)}}" rel="self" type="application/rss+xml" />
+  <link>{{url_for('main.view_blog',blog_id=blog.id)}}</link>
+  <description>{{ blog.description}}</description>
+  <lastBuildDate>{{ build_date.strftime("%a, %d %b %Y %T") }} UTC</lastBuildDate>
+  <language>en-US</language>
+  {% for post in posts %}
+    <item>
+        <title>{{ post.title }}</title>
+        <link>{{url_for('main.view_post',post_id=post.id)}}</link>
+        <description>{{ post.content[:200] }}{% if post.content|length > 200 %}...{% endif %}</description>
+        <pubDate>{{ post.created_at.strftime("%a, %d %b %Y %T") }} UTC</pubDate>
+    </item>
+  {% endfor %}
+</channel>
+</rss>
+
+      
+    

@@ -1,28 +1,88 @@
 {% extends "base.html" %}
-{% from "macros.html" import blog_navbar %}
+{% from "_macros.html" import blog_navbar, downstyle, blog_footer %}
 {% block title %}{{ blog.title }}{% endblock %}
-
 {% block content %}
-{{ blog_navbar(blog.id) }}
-<div class="row">
-    <div class="col-md-12">
-        <h1>{{ blog.title }}</h1>
-        <p>{{ blog.description }}</p>
-        {% if posts %}
-            {% for post in posts %}
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h2 class="card-title">{{ post.title }}</h2>
-                        <p class="card-text">{{ post.content[:200] | safe }}{% if post.content|length > 200 %}...{% endif %}</p>
-                        <a href="{{ url_for('main.view_post', post_id=post.id) }}" class="btn btn-primary">Read more</a>
-                    </div>
+    {{ blog_navbar(blog.id) }}
+    <div class="row">
+        <div id="about">
+            <h1>{{ blog.title }}</h1>
+            <p>{{ blog.description }}</p>
+            <p>By <a href="{{ url_for('main.view_user',username=blog.author.username) }}"
+                class="btn btn-link mb-3">{{ blog.author.username }}</a></p>
+            {% if current_user.is_authenticated %}
+                {% if blog.author == current_user %}
+                    <a href="{{ url_for('main.edit_blog',blog_id=blog.id) }}"
+                       class="btn btn-primary">{{ _("Edit Blog") }}</a>
+                    <a href="{{ url_for('main.blog_admin',blog_id=blog.id) }}"
+                       class="btn btn-secondary">{{ _("Go to Admin Panel") }}</a>
+                {% endif %}
+            {% endif %}
+        </div>
+        <br>
+        <br>
+        <div class="col-md-12">
+            <ul class="nav nav-pills" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link"
+                            id="pills-blog"
+                            data-bs-toggle="tab"
+                            data-bs-target="#pill-posts"
+                            type="button"
+                            role="tab"
+                            aria-controls="pill-posts"
+                            aria-selected="false">Posts</button>
+                </li>
+            </ul>
+            <br>
+            <hr>
+            <br>
+            <div class="tab-content" id="pills-tabContent">
+                <div class="tab-pane fade active" id="pill-posts" role="tabpanel">
+                    {% if posts %}
+                        {% for post in posts %}
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h1 class="card-title">{{ post.title }}</h1>
+                                    <p>
+                                        By <a href="{{ url_for('main.view_user',username=post.author.username) }}"
+    class="btn btn-link mb-3">{{ post.author.username }}</a>
+                                    </p>
+                                    {{ moment(post.created_at).format('LLL') }}
+                                    {% if post.updated_at %}
+                                        {% if moment(post.updated_at).format('LLL') != moment(post.created_at).format('LLL') %}
+                                            <p>{{ _(" Last Updated at") }} {{ moment(post.updated_at).format('LLL') }}</p>
+                                        {% endif %}
+                                    {% endif %}
+                                    <hr />
+                                    <p class="card-text">
+                                        {{ downstyle(post.content[:200],1) }}
+                                        {% if post.content|length > 200 %}...{% endif %}
+                                    </p>
+                                    <a href="{{ url_for('main.view_post', post_id=post.id) }}"
+                                       class="btn btn-primary">{{ _("Read more") }}</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <nav aria-label="Posts navigation">
+                            <ul class="pagination">
+                                {% if prev_url %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ prev_url }}">Newer posts</a>
+                                    </li>
+                                {% endif %}
+                                {% if next_url %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ next_url }}">Older posts</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    {% else %}
+                        <p>{{ _("No posts available yet.") }}</p>
+                    {% endif %}
                 </div>
-            {% endfor %}
-        {% else %}
-            <p>No posts available yet.</p>
-        {% endif %}
-
-        <a href="{{ url_for('main.blog_admin',blog_id=blog.id) }}" class="btn btn-success mt-3">Go to Admin Panel</a>
+            </div>
+        </div>
     </div>
-</div>
+    {{blog_footer(blog.id)}}
 {% endblock %}

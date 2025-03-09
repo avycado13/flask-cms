@@ -1,44 +1,38 @@
 {% extends "base.html" %}
 {% from "bootstrap_wtf.html" import quick_form, form_field %}
-
-{% block title %}Admin Panel - Flask CMS{% endblock %}
-
+{% block title %}{{ _("Admin Panel - Flask CMS") }}{% endblock %}
 {% block content %}
-<div class="row">
-    <div class="col-md-12">
-    <h1>Admin Panel</h1>
-
-    <!-- Create Form -->
-    <div class="card mb-4">
-        <div class="card-header">
-            <h2>Create New Blog</h2>
-        </div>
-        <div class="card-body">
-            {{ quick_form(create_form) }}
-        </div>
-    </div>
-
-    <div class="mt-5">
-        <h2>Existing Blogs</h2>
-        {% if blogs %}
-            {% for blog in blogs %}
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h3 class="card-title">{{ blog.title }}</h3>
-                        <p class="card-text">{{ blog.description[:100] }}...</p>
-                        <form method="POST" class="d-inline">
-                            {{ actions_form.csrf_token }}
-                            {{ actions_form.blog_id(value=blog.id) }}
-                            {{ actions_form.view(class="btn btn-primary") }}
-                            {{ actions_form.delete(class="btn btn-danger ms-2", onclick="return confirm('Are you sure you want to delete this post?')") }}
-                        </form>
-                    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <h1>{{ _("Admin Panel") }}</h1>
+            <!-- Create Form -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h2>{{ _("Create New Blog") }}</h2>
                 </div>
-            {% endfor %}
-        {% else %}
-            <p>No blogs created yet.</p>
-        {% endif %}
-    </div>
-
-    <a href="{{ url_for('main.index') }}" class="btn btn-outline-primary mt-3">Back to Home</a>
-{% endblock %}
+                <div class="card-body">{{ quick_form(create_form) }}</div>
+            </div>
+            <div class="mt-5">
+                <h2>{{ _("Existing Blogs") }}</h2>
+                {% if blogs %}
+                    {% for blog in blogs %}
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h3 class="card-title">{{ blog.title }}</h3>
+                                <p class="card-text">{{ _(blog.description[:100]) }}...</p>
+                                <form method="POST" class="d-inline">
+                                    {{ actions_form.csrf_token }}
+                                    {{ actions_form.blog_id(value=blog.id) }}
+                                    {{ actions_form.view(class="btn btn-primary") }}
+                                    {{ actions_form.delete(class="btn btn-danger ms-2", onclick="return confirm('Are you sure you want to delete this post?')") }}
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>{{ _("No blogs created yet.") }}</p>
+                {% endif %}
+            </div>
+            <a href="{{ url_for("main.index") }}"
+               class="btn btn-outline-primary mt-3">{{ _("Back to Home") }}</a>
+        {% endblock %}

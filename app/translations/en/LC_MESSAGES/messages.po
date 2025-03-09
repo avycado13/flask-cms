@@ -1,0 +1,263 @@
+# English translations for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-02-22 16:32-0800\n"
+"PO-Revision-Date: 2025-02-20 10:15-0800\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: app/translate.py:11
+msgid "Error: the translation service is not configured."
+msgstr ""
+
+#: app/translate.py:25
+msgid "Error: the translation service failed."
+msgstr ""
+
+#: app/main/forms.py:27 app/main/forms.py:40
+msgid "Title"
+msgstr ""
+
+#: app/main/forms.py:28
+msgid "Content"
+msgstr ""
+
+#: app/main/forms.py:29
+msgid "Save Page"
+msgstr ""
+
+#: app/main/forms.py:33
+msgid "Post ID"
+msgstr ""
+
+#: app/main/forms.py:34 app/main/forms.py:47
+msgid "View"
+msgstr ""
+
+#: app/main/forms.py:35 app/main/forms.py:48
+msgid "Edit"
+msgstr ""
+
+#: app/main/forms.py:36 app/main/forms.py:49
+msgid "Delete"
+msgstr ""
+
+#: app/main/forms.py:41
+msgid "Description"
+msgstr ""
+
+#: app/main/forms.py:42
+msgid "Create Blog"
+msgstr ""
+
+#: app/main/forms.py:46
+msgid "Blog ID"
+msgstr ""
+
+#: app/main/forms.py:53 app/main/routes.py:239
+msgid "Search"
+msgstr ""
+
+#: app/main/forms.py:64
+msgid "Comment"
+msgstr ""
+
+#: app/main/forms.py:65
+msgid "Submit Comment"
+msgstr ""
+
+#: app/main/routes.py:68
+msgid "Comment created successfully!"
+msgstr ""
+
+#: app/main/routes.py:110
+msgid "Page created successfully!"
+msgstr ""
+
+#: app/main/routes.py:137
+msgid "You don't have access to edit this blog"
+msgstr ""
+
+#: app/main/routes.py:150
+msgid "Post updated successfully!"
+msgstr ""
+
+#: app/main/routes.py:168
+msgid "Blog created successfully!"
+msgstr ""
+
+#: app/main/routes.py:175
+msgid "Blog deleted successfully!"
+msgstr ""
+
+#: app/main/routes.py:201
+msgid "Blog updated successfully!"
+msgstr ""
+
+#: app/templates/_macros.html:10 app/templates/_macros.html:40
+msgid "Home"
+msgstr ""
+
+#: app/templates/_macros.html:13 app/templates/_macros.html:43
+msgid "Blog"
+msgstr ""
+
+#: app/templates/admin.html:4
+msgid "Admin Panel - Flask CMS"
+msgstr ""
+
+#: app/templates/admin.html:9
+msgid "Admin Panel"
+msgstr ""
+
+#: app/templates/admin.html:14
+msgid "Create New Blog"
+msgstr ""
+
+#: app/templates/admin.html:22
+msgid "Existing Blogs"
+msgstr ""
+
+#: app/templates/admin.html:39
+msgid "No blogs created yet."
+msgstr ""
+
+#: app/templates/admin.html:43 app/templates/blog_admin.html:57
+msgid "Back to Home"
+msgstr ""
+
+#: app/templates/base.html:6
+msgid "Flask CMS"
+msgstr ""
+
+#: app/templates/base.html:36
+msgid ""
+"Hey! You&#39;ve Come to a blank page! this will probably get filled in "
+"eventually"
+msgstr ""
+
+#: app/templates/blog_admin.html:5
+msgid "Admin Panel - blog.title"
+msgstr ""
+
+#: app/templates/blog_admin.html:17
+msgid "Create New Post"
+msgstr ""
+
+#: app/templates/blog_admin.html:26
+msgid "Existing Posts"
+msgstr ""
+
+#: app/templates/blog_admin.html:35 app/templates/view_blog.html:42
+#: app/templates/view_post.html:18
+msgid " Last Updated at"
+msgstr ""
+
+#: app/templates/blog_admin.html:53
+msgid "No posts created yet."
+msgstr ""
+
+#: app/templates/edit_blog.html:4
+msgid "Edit Blog"
+msgstr ""
+
+#: app/templates/edit_blog.html:9 app/templates/edit_blog.html:15
+#: app/templates/edit_post.html:4 app/templates/edit_post.html:9
+#: app/templates/edit_post.html:15
+msgid "Edit Post"
+msgstr ""
+
+#: app/templates/edit_blog.html:22 app/templates/view_post.html:12
+msgid "Back to Blog"
+msgstr ""
+
+#: app/templates/edit_blog.html:23 app/templates/edit_post.html:23
+msgid "Back to Admin"
+msgstr ""
+
+#: app/templates/edit_post.html:22
+msgid "Back to Post"
+msgstr ""
+
+#: app/templates/search.html:4 app/templates/search.html:8
+msgid "Search Results"
+msgstr ""
+
+#: app/templates/search.html:9
+#, python-format
+msgid "Found %(count)s results for \"%(query)s\""
+msgstr ""
+
+#: app/templates/search.html:21
+msgid "Newer posts"
+msgstr ""
+
+#: app/templates/search.html:26
+msgid "Older posts"
+msgstr ""
+
+#: app/templates/view_blog.html:47 app/templates/view_user.html:48
+msgid "Read more"
+msgstr ""
+
+#: app/templates/view_blog.html:52
+msgid "No posts available yet."
+msgstr ""
+
+#: app/templates/view_blog.html:56
+msgid "Go to Admin Panel"
+msgstr ""
+
+#: app/templates/view_post.html:29
+msgid "Add a Comment"
+msgstr ""
+
+#: app/templates/view_post.html:32
+msgid "Please login to add a comment."
+msgstr ""
+
+#: app/templates/view_post.html:40
+msgid "Comments"
+msgstr ""
+
+#: app/templates/view_post.html:52 app/templates/view_user.html:95
+msgid "No comments yet."
+msgstr ""
+
+#: app/templates/view_user.html:28
+msgid "Last seen on"
+msgstr ""
+
+#: app/templates/view_user.html:43 app/templates/view_user.html:64
+#: app/templates/view_user.html:85
+msgid "Last Updated at"
+msgstr ""
+
+#: app/templates/view_user.html:53
+msgid "No posts yet."
+msgstr ""
+
+#: app/templates/view_user.html:69
+msgid "View more"
+msgstr ""
+
+#: app/templates/view_user.html:74
+msgid "No blogs yet."
+msgstr ""
+
+#: app/templates/view_user.html:90
+msgid "View comment"
+msgstr ""
+

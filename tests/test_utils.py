@@ -1,4 +1,5 @@
 # Copyright 2019 by J. Christopher Wagner (jwag). All rights reserved.
+from app.extensions import security
 
 
 def set_current_user(app, ds, email):
@@ -11,4 +12,4 @@ def set_current_user(app, ds, email):
             return ds.find_user(email=email)
         return app.security.login_manager.anonymous_user()
 
-    app.security.login_manager.request_loader(token_cb)
+    security.login_manager.request_loader(token_cb)
