@@ -77,15 +77,17 @@ blog_followers = db.Table(
 
 
 class Blog(SearchableMixin, db.Model):
-    __searchable__ = ["title", "description"]
+    __searchable__ = ["title", "description", "slug", "posts", "pages"]
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(150), nullable=False)
+    slug = db.Column(db.String(150), nullable=True)
     description = db.Column(db.Text, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
 
     author: so.Mapped["User"] = so.relationship("User", back_populates="blogs")
     posts = db.relationship("Post", back_populates="blog", cascade="all, delete-orphan")
+    pages = db.relationship("Page", back_populates="blog", cascade="all, delete-orphan")
     newsletter = so.mapped_column(sa.Boolean, default=False)
 
 
@@ -107,6 +109,24 @@ class Post(SearchableMixin, db.Model):
     blog = db.relationship("Blog", back_populates="posts")
     author = db.relationship("User", back_populates="posts")
     comments = db.relationship("Comment", back_populates="post", cascade="all, delete")
+
+
+class Page(SearchableMixin, db.Model):
+    __searchable__ = ["title", "content"]
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(150), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    blog_id = db.Column(db.Integer, db.ForeignKey("blog.id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+
+    created_at = db.Column(db.DateTime, default=db.func.now())
+    updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
+
+    published = db.Column(db.Boolean, default=False)
+
+    blog = db.relationship("Blog", back_populates="pages")
+    author = db.relationship("User", back_populates="pages")
 
 
 class WebAuthn(db.Model, fsqla.FsWebAuthnMixin):
@@ -154,8 +174,9 @@ class User(db.Model, UserMixin):
         "Role", secondary=roles_users, backref=db.backref("users", lazy="dynamic")
     )
     comments = db.relationship("Comment", backref="user")
-    blogs = db.relationship("Blog", backref="user")
+    blogs = db.relationship("Blog", back_populates="author")
     posts = db.relationship("Post", back_populates="author")
+    pages = db.relationship("Page", back_populates="author")
     login_count = db.Column(db.Integer)
     tf_totp_secret = db.Column(db.String(255), nullable=True)
     tf_primary_method = db.Column(db.String(255))

@@ -23,8 +23,15 @@
         <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.bubble.css"
               rel="stylesheet" />
         <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+        <!-- KaTeX for Quill & LaTeX -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.css" integrity="sha384-FkTZUsHjYVyYpU6dse+5AzszY5617FqhnLpcMIIAlLKTbdmeVMO/7K6BrdHWM28V" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.js" integrity="sha384-CAltQiu9myJj3FAllEacN6FT+rOyXo+hFZKGuR2p4HB8JvJlyUHm31eLfL4eEiJL" crossorigin="anonymous"></script>
+        <!-- Moment for Dates -->
         {{ moment.include_moment() }}
         {{ moment.locale(auto_detect=True) }}
+        <!-- Dropzone for files -->
+        {{ dropzone.load_css() }}
+        {{ dropzone.load_js() }}
     </head>
     <body class="container py-4">
         {% with messages = get_flashed_messages(with_categories=true) %}

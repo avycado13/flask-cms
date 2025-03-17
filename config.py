@@ -7,7 +7,8 @@ class Config:
     """
     Set Flask configuration variables.
     """
-
+    SESSION_TYPE="filesystem"
+    SESSION_FILE_DIR="cache"
     LANGUAGES: list[str] = ["en"]
     RQ_REDIS_URL = "redis://localhost:6379/0"
     ELASTICSEARCH_ENABLED: bool = False

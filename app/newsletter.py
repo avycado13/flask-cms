@@ -16,10 +16,10 @@ def send_newsletter(blog_id):
         html = render_template("email/newsletter.html", blog=blog, posts=posts)
         send_email(
             f"Newsletter: {blog.title} {today}",
-            (blog.title,current_app.config["MAIL_DEFAULT_SENDER"]),
+            (blog.title, current_app.config["MAIL_DEFAULT_SENDER"]),
             [recipient.email for recipient in blog.recipients],
             "For best viewing experience, please look at html",
             html,
         )
     except Exception:
-        current_app.logger.error("Unhandled exception", exc_info=sys.exc_info())
+        current_app.logger.exception("Unhandled exception", exc_info=sys.exc_info())

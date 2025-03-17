@@ -1,6 +1,6 @@
 {% extends "base.html" %}
-{% from "_macros.html" import blog_navbar, downstyle %}
-{% block title %}{{ user.username }} - About{% endblock %}
+{% from "_macros.html" import downstyle %}
+{% block title %}{{ user.username }} - {{_("About")}}{% endblock %}
 {% block content %}
     <div class="row">
         <div class="col-md-12">
@@ -21,6 +21,15 @@
             <ul class="nav nav-pills">
                 <li class="nav-item">
                     <a class="nav-link active"
+                       id="pill-all-tab"
+                       data-bs-toggle="tab"
+                       data-bs-target="#pill-all"
+                       type="button"
+                       role="tab"
+                       href="#pill-all">All</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
                        id="pill-posts-tab"
                        data-bs-toggle="tab"
                        data-bs-target="#pill-posts"
@@ -50,6 +59,54 @@
             <br>
             <br>
             <div class="tab-content" id="pills-tabContent">
+                <div class="tab-pane show active" id="pill-all" role="tabpanel">
+                    {% if all_activity %}
+                        {% for action in all_activity %}
+                            {% if action.__class__.__name__ == "Post" %}
+                            {% set post = action %}
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h2 class="card-title">{{ post.title }}</h2>
+                                        {{ moment(post.created_at).format('LLL') }}
+                                        {% if post.updated_at %}
+                                            {% if moment(post.updated_at).format('LLL') != moment(post.created_at).format('LLL') %}
+                                                <p>{{ _("Last Updated at") }} {{ moment(post.updated_at).format('LLL') }}</p>
+                                            {% endif %}
+                                        {% endif %}
+                                        <hr />
+                                        <p class="card-text">
+                                            {{ downstyle(post.content[:200],2) }}
+                                            {% if post.content|length > 200 %}...{% endif %}
+                                        </p>
+                                        <a href="{{ url_for('main.view_post', post_id=post.id) }}"
+                                        class="btn btn-primary">{{ _("Read more") }}</a>
+                                    </div>
+                                </div>
+                            {% elif action.__class__.__name__ == "Comment" %}
+                            {% set comment = action %}
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    {{ moment(comment.created_at).format('LLL') }}
+                                    {% if comment.updated_at %}
+                                        {% if moment(comment.updated_at).format('LLL') != moment(comment.created_at).format('LLL') %}
+                                            <p>{{ _("Last Updated at") }} {{ moment(comment.updated_at).format('LLL') }}</p>
+                                        {% endif %}
+                                    {% endif %}
+                                    <hr />
+                                    <p class="card-text">
+                                        {{ downstyle(comment.content[:200],2) }}
+                                        {% if comment.content|length > 200 %}...{% endif %}
+                                    </p>
+                                    <a href="{{ url_for('main.view_post', post_id=comment.post.id) }}"
+                                       class="btn btn-primary">{{ _("View comment") }}</a>
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <p>{{ _("No activity yet.") }}</p>
+                    {% endif %}
+                </div>
                 <div class="tab-pane show active" id="pill-posts" role="tabpanel">
                     {% if posts %}
                         {% for post in posts %}

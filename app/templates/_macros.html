@@ -1,4 +1,4 @@
-{% macro post_navbar(blog_id) %}
+{% macro navbar(blog) %}
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
             <button class="navbar-toggler"
@@ -15,12 +15,21 @@
                     <li class="nav-item">
                         <a class="nav-link active"
                            aria-current="page"
-                           href="{{ url_for('main.view_blog',blog_id=blog_id) }}">{{ _("Home") }}</a>
+                           href="{{ url_for('main.view_blog',blog_id=blog.id) }}">{{ _("Home") }}</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link"
-                           href="{{ url_for('main.view_blog',blog_id=blog_id) }}">{{ _("Blog") }}</a>
+                           href="{{ url_for('main.view_blog',blog_id=blog.id) }}">{{ _("Blog") }}</a>
                     </li>
+                    {% if blog.pages %}
+                        {% for page in blog.pages %}
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                aria-current="page"
+                                href="{{ url_for('main.view_page',page_id=page.id) }}">{{ page.title }}</a>
+                            </li>
+                        {% endfor %}
+                    {% endif %}
                     {% if g.search_form %}
                         <form class="navbar-form navbar-left"
                               method="get"

@@ -1,3 +1,4 @@
+from wtforms.validators import ValidationError
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SubmitField, HiddenField, BooleanField
 from wtforms.validators import DataRequired
@@ -23,11 +24,29 @@ class TinyMCEField(TextAreaField):
     widget = TinyMCEWidget()
 
 
+class BannedSlugValidator:
+    def __init__(self, banned_slugs=None):
+        if banned_slugs is None:
+            banned_slugs = ["login", "www", "register", "about"]
+        self.banned_slugs = banned_slugs
+
+    def __call__(self, form, field):
+        if field.data in self.banned_slugs:
+            raise ValidationError(_("This slug is not allowed."))
+
+
 class PostForm(FlaskForm):
     title = StringField(_l("Title"), validators=[DataRequired()])
     content = TinyMCEField(_l("Content"), validators=[DataRequired()])
     published = BooleanField(_l("Publish"))
     publish_in_newsletter = BooleanField(_l("Publish to Newsletter"))
+    submit = SubmitField(_l("Save Post"))
+
+
+class PageForm(FlaskForm):
+    title = StringField(_l("Title"), validators=[DataRequired()])
+    content = TinyMCEField(_l("Content"), validators=[DataRequired()])
+    published = BooleanField(_l("Publish"))
     submit = SubmitField(_l("Save Post"))
 
 
@@ -40,6 +59,10 @@ class PostActionForm(FlaskForm):
 
 class BlogForm(FlaskForm):
     title = StringField(_l("Title"), validators=[DataRequired()])
+    slug = StringField(
+        _l("URL Slug"), validators=[DataRequired(), BannedSlugValidator()]
+    )
+
     description = TextAreaField(_l("Description"))
     newsletter = BooleanField(_l("Newsletter"))
     submit = SubmitField(_l("Create Blog"))

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% from "_macros.html" import navbar, downstyle,blog_footer %}
+{% from "bootstrap_wtf.html" import quick_form, form_field %}
+{% block title %} {{ page.title }} - {{ blog.title }} {% endblock title%}
+{% block content %}
+    {{ navbar(blog) }}
+    <div class="row">
+        <div class="col-md-12">
+            <a href="{{ url_for('main.view_blog',blog_id=blog.id) }}"
+               class="btn btn-link mb-3">← {{ _("Back to Blog") }}</a>
+            <h1>{{ page.title }}</h1>
+            <p>
+                By <a href="{{ url_for('main.view_user',username=post.author.username) }}"
+    class="btn btn-link mb-3">{{ page.author.username }}</a>
+            </p>
+            {{ moment(page.created_at).format('LLL') }}
+            {% if page.updated_at %}
+                {% if moment(page.updated_at).format('LLL') != moment(page.created_at).format('LLL') %}
+                    <p>{{ _(" Last Updated at") }} {{ moment(page.updated_at).format('LLL') }}</p>
+                {% endif %}
+            {% endif %}
+            <hr />
+            <div class="content">{{ downstyle(page.content,1) }}</div>
+        </div>
+        <br>
+        <br>
+    </div>
+    {{ blog_footer( blog.id ) }}
+{% endblock content%}

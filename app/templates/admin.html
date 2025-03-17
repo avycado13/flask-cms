@@ -5,6 +5,7 @@
     <div class="row">
         <div class="col-md-12">
             <h1>{{ _("Admin Panel") }}</h1>
+            <br>
             <!-- Create Form -->
             <div class="card mb-4">
                 <div class="card-header">
@@ -33,6 +34,6 @@
                     <p>{{ _("No blogs created yet.") }}</p>
                 {% endif %}
             </div>
-            <a href="{{ url_for("main.index") }}"
+            <a href="{{ url_for('main.index') }}"
                class="btn btn-outline-primary mt-3">{{ _("Back to Home") }}</a>
         {% endblock %}

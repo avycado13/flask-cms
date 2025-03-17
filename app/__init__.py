@@ -1,6 +1,6 @@
 import os
 from flask import Flask, request, current_app, send_from_directory
-from app.extensions import db, migrate, csrf, babel, security, moment, mail
+from app.extensions import db, migrate, csrf, babel, security, moment, mail, dropzone,session
 from flask_security import (
     SQLAlchemyUserDatastore,
 )
@@ -31,8 +31,10 @@ def create_app(config_class=Config):
     mail.init_app(app)
     babel.init_app(app, locale_selector=get_locale)
     moment.init_app(app)
+    dropzone.init_app(app)
     user_datastore = SQLAlchemyUserDatastore(db, User, Role, WebAuthn)
     security.init_app(app, user_datastore)
+    session.init_app(app)
     app.elasticsearch = (
         Elasticsearch(
             [app.config["ELASTICSEARCH_URL"]],
@@ -52,6 +54,10 @@ def create_app(config_class=Config):
             mimetype="image/vnd.microsoft.icon",
         )
 
+    from app.errors import bp as errors_bp
+
+    app.register_blueprint(errors_bp)
+
     from app.main import bp as main_bp
 
     app.register_blueprint(main_bp)
@@ -62,4 +68,5 @@ def create_app(config_class=Config):
 
     with app.app_context():
         db.create_all()
+
     return app

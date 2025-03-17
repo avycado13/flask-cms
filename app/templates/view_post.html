@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% from "_macros.html" import post_navbar, downstyle,blog_footer %}
+{% from "_macros.html" import navbar, downstyle,blog_footer %}
 {% from "bootstrap_wtf.html" import quick_form, form_field %}
 {% block title %} {{ post.title }} - {{ blog.title }} {% endblock title%}
 {% block content %}
-    {{ post_navbar(blog.id) }}
+    {{ navbar(blog) }}
     <div class="row">
         <div class="col-md-12">
             <a href="{{ url_for('main.view_blog',blog_id=blog.id) }}"
@@ -57,4 +57,4 @@
         </div>
     </div>
     {{ blog_footer( blog.id ) }}
-    {% endblock content%}
+{% endblock content%}
