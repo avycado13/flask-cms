@@ -33,4 +33,4 @@ RUN flask translate compile
 # Run the FastAPI application by default
 # Uses `fastapi dev` to enable hot-reloading when the `watch` sync occurs
 # Uses `--host 0.0.0.0` to allow access from outside the container
-ENTRYPOINT ["./boot.sh"]
+ENTRYPOINT ["./run.sh"]
