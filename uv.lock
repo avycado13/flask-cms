@@ -479,7 +479,9 @@ dependencies = [
     { name = "flask-security", extra = ["common", "mfa"] },
     { name = "flask-session", extra = ["redis", "sqlalchemy"] },
     { name = "flask-sqlalchemy" },
+    { name = "gunicorn" },
     { name = "httpx" },
+    { name = "langdetect" },
     { name = "markdown" },
     { name = "python-frontmatter" },
     { name = "rq" },
@@ -513,7 +515,9 @@ requires-dist = [
     { name = "flask-security", extras = ["mfa", "common"], specifier = ">=5.6.0" },
     { name = "flask-session", extras = ["redis", "sqlalchemy"], specifier = ">=0.8.0" },
     { name = "flask-sqlalchemy", specifier = ">=3.1.1" },
+    { name = "gunicorn", specifier = ">=23.0.0" },
     { name = "httpx", specifier = ">=0.28.1" },
+    { name = "langdetect", specifier = ">=1.0.9" },
     { name = "markdown", specifier = ">=3.7" },
     { name = "python-frontmatter", specifier = ">=1.1.0" },
     { name = "rq", specifier = ">=2.1.0" },
@@ -767,6 +771,18 @@ wheels = [
 ]
 
 [[package]]
+name = "gunicorn"
+version = "23.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "packaging" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/34/72/9614c465dc206155d93eff0ca20d42e1e35afc533971379482de953521a4/gunicorn-23.0.0.tar.gz", hash = "sha256:f014447a0101dc57e294f6c18ca6b40227a4c90e9bdb586042628030cba004ec", size = 375031, upload-time = "2024-08-10T20:25:27.378Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/cb/7d/6dac2a6e1eba33ee43f318edbed4ff29151a49b5d37f080aad1e6469bca4/gunicorn-23.0.0-py3-none-any.whl", hash = "sha256:ec400d38950de4dfd418cff8328b2c8faed0edb0d517d3394e457c317908ca4d", size = 85029, upload-time = "2024-08-10T20:25:24.996Z" },
+]
+
+[[package]]
 name = "h11"
 version = "0.14.0"
 source = { registry = "https://pypi.org/simple" }
@@ -899,6 +915,15 @@ sdist = { url = "https://files.pythonhosted.org/packages/10/db/58f950c996c793472
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d1/0f/8910b19ac0670a0f80ce1008e5e751c4a57e14d2c4c13a482aa6079fa9d6/jsonschema_specifications-2024.10.1-py3-none-any.whl", hash = "sha256:a09a0680616357d9a0ecf05c12ad234479f549239d0f5b55f3deea67475da9bf", size = 18459, upload-time = "2024-10-08T12:29:30.439Z" },
 ]
+
+[[package]]
+name = "langdetect"
+version = "1.0.9"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "six" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0e/72/a3add0e4eec4eb9e2569554f7c70f4a3c27712f40e3284d483e88094cc0e/langdetect-1.0.9.tar.gz", hash = "sha256:cbc1fef89f8d062739774bd51eda3da3274006b3661d199c2655f6b3f6d605a0", size = 981474, upload-time = "2021-05-07T07:54:13.562Z" }
 
 [[package]]
 name = "mako"

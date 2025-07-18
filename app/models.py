@@ -121,7 +121,7 @@ class Post(SearchableMixin, db.Model):
     updated_at = so.mapped_column(
         sa.DateTime, default=sa.func.now(), onupdate=sa.func.now()
     )
-
+    language: so.Mapped[Optional[str]] = so.mapped_column(sa.String(5))
     published = so.mapped_column(sa.Boolean, default=False)
     publish_in_newsletter = so.mapped_column(sa.Boolean, default=False)
 

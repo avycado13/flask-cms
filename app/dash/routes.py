@@ -8,6 +8,7 @@ from flask import (
     g,
     current_app,
 )
+from langdetect import detect, LangDetectException
 from app.extensions import db
 from app.models import Post, Blog, Page
 from app.dash import bp
@@ -66,6 +67,10 @@ def blog_admin(blog_id=None, slug=None):
             ],
         )
         title = bleach.clean(post_create_form.title.data)
+        try:
+            language = detect(post_create_form.content)
+        except LangDetectException:
+            language = ""
         new_page = Post(
             title=title,
             content=content,
@@ -73,6 +78,7 @@ def blog_admin(blog_id=None, slug=None):
             user_id=current_user.id,
             published=post_create_form.published.data,
             publish_in_newsletter=post_create_form.publish_in_newsletter.data,
+            language=language,
         )
         db.session.add(new_page)
         db.session.commit()
@@ -267,12 +273,17 @@ def upload(blog_id=None, slug=None):
                         current_app.logger.info(f"Error converting markdown file: {e}")
                         flash(_("Failed to parse markdown"), "error")
                         return redirect(url_for("blog_admin"))
+                    try:
+                        language = detect(html)
+                    except LangDetectException:
+                        language = ""
                     new_post = Post(
                         title=matter.metadata.get("title"),
                         content=html,
                         blog_id=blog.id,
                         user=current_user,
                         published=not matter.metadata.get("draft"),
+                        language=language,
                     )
                     db.session.add(new_post)
                     db.session.commit()
