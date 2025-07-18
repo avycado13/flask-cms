@@ -1,48 +1,50 @@
+import os
 import secrets
-import passlib
 from typing import Optional
 
 
 class Config:
     """
-    Set Flask configuration variables.
+    Set Flask configuration variables using environment variables with sensible defaults.
     """
 
-    SESSION_TYPE = "filesystem"
-    SESSION_FILE_DIR = "cache"
-    LANGUAGES: list[str] = ["en"]
-    RQ_REDIS_URL = "redis://localhost:6379/0"
-    ELASTICSEARCH_ENABLED: bool = False
-    ELASTICSEARCH_URL: Optional[str] = "http://localhost:9200"
-    ELASTICSEARCH_API_KEY: Optional[str] = (
-        "RWhJVEpKVUJON2NUWE8zUFJ1VTQ6ZmVOTnpNLS1TS0NPYV80ZEo2OUNydw=="
+    SESSION_TYPE = os.getenv("SESSION_TYPE", "filesystem")
+    SESSION_FILE_DIR = os.getenv("SESSION_FILE_DIR", "cache")
+    LANGUAGES: list[str] = os.getenv("LANGUAGES", "en").split(",")
+    RQ_REDIS_URL = os.getenv("RQ_REDIS_URL", "redis://localhost:6379/0")
+    
+    ELASTICSEARCH_ENABLED: bool = os.getenv("ELASTICSEARCH_ENABLED", "false").lower() == "true"
+    ELASTICSEARCH_URL: Optional[str] = os.getenv("ELASTICSEARCH_URL", "http://localhost:9200")
+    ELASTICSEARCH_API_KEY: Optional[str] = os.getenv("ELASTICSEARCH_API_KEY")
+
+    POSTS_PER_PAGE: int = int(os.getenv("POSTS_PER_PAGE", 10))
+    SECRET_KEY = os.getenv("SECRET_KEY", secrets.token_urlsafe())
+    SECURITY_PASSWORD_SALT = os.getenv(
+        "SECURITY_PASSWORD_SALT", "213691981621818227987771034862335535908"
     )
-    POSTS_PER_PAGE: int = 10
-    CLOUDSHELL_PREFIX: str = "/cloudshell"
-    SECRET_KEY = secrets.token_urlsafe()
-    SECURITY_PASSWORD_SALT = str(213691981621818227987771034862335535908)
-    # Change for production env
-    SQLALCHEMY_DATABASE_URI: str = "sqlite:///test.db"
-    DEBUG: bool = True
+    SQLALCHEMY_DATABASE_URI: str = os.getenv("SQLALCHEMY_DATABASE_URI", "sqlite:///test.db")
+    SQLALCHEMY_TRACK_MODIFICATIONS = os.getenv("SQLALCHEMY_TRACK_MODIFICATIONS", "false").lower() == "true"
+    DEBUG: bool = os.getenv("DEBUG", "true").lower() == "true"
+
     # Flask Security
-    # WebAuthn
-    SECURITY_WEBAUTHN: bool = True
-    SECURITY_WAN_ALLOW_AS_FIRST_FACTOR: bool = True
-    SECURITY_WAN_ALLOW_AS_MULTI_FACTOR: bool = True
-    SECURITY_WAN_ALLOW_AS_VERIFY: bool = True
-    # Two Factor
-    SECURITY_TWO_FACTOR: bool = True
-    SECURITY_TWO_FACTOR_ENABLED_METHODS: list[str] = ["authenticator"]
-    SECURITY_TOTP_SECRETS: dict[str, str] = {"1": "JBSWY3DPEHPK3PXP"}
-    SECURITY_TOTP_ISSUER: str = "Flask CMS"
-    SECURITY_REGISTERABLE: bool = True
-    SECURITY_POST_LOGIN_VIEW = "/"
-    SECURITY_SEND_REGISTER_EMAIL: bool = False
-    SECURITY_USERNAME_ENABLE: bool = True
-    # SECURITY_TWO_FACTOR_REQUIRED=True
-    SECURITY_CSRF_IGNORE_UNAUTH_ENDPOINTS: bool = False
-    TEMPLATES_AUTO_RELOAD = True
-    POSTS_PER_PAGE = 3
+    SECURITY_WEBAUTHN: bool = os.getenv("SECURITY_WEBAUTHN", "true").lower() == "true"
+    SECURITY_WAN_ALLOW_AS_FIRST_FACTOR: bool = os.getenv("SECURITY_WAN_ALLOW_AS_FIRST_FACTOR", "true").lower() == "true"
+    SECURITY_WAN_ALLOW_AS_MULTI_FACTOR: bool = os.getenv("SECURITY_WAN_ALLOW_AS_MULTI_FACTOR", "true").lower() == "true"
+    SECURITY_WAN_ALLOW_AS_VERIFY: bool = os.getenv("SECURITY_WAN_ALLOW_AS_VERIFY", "true").lower() == "true"
+
+    SECURITY_TWO_FACTOR: bool = os.getenv("SECURITY_TWO_FACTOR", "true").lower() == "true"
+    SECURITY_TWO_FACTOR_ENABLED_METHODS: list[str] = os.getenv("SECURITY_TWO_FACTOR_ENABLED_METHODS", "authenticator").split(",")
+    SECURITY_TOTP_SECRETS: dict[str, str] = {
+        k: v for k, v in (s.split(":") for s in os.getenv("SECURITY_TOTP_SECRETS", "1:JBSWY3DPEHPK3PXP").split(","))
+    }
+    SECURITY_TOTP_ISSUER: str = os.getenv("SECURITY_TOTP_ISSUER", "Flask CMS")
+    SECURITY_REGISTERABLE: bool = os.getenv("SECURITY_REGISTERABLE", "true").lower() == "true"
+    SECURITY_POST_LOGIN_VIEW = os.getenv("SECURITY_POST_LOGIN_VIEW", "/")
+    SECURITY_SEND_REGISTER_EMAIL: bool = os.getenv("SECURITY_SEND_REGISTER_EMAIL", "false").lower() == "true"
+    SECURITY_USERNAME_ENABLE: bool = os.getenv("SECURITY_USERNAME_ENABLE", "true").lower() == "true"
+    SECURITY_CSRF_IGNORE_UNAUTH_ENDPOINTS: bool = os.getenv("SECURITY_CSRF_IGNORE_UNAUTH_ENDPOINTS", "false").lower() == "true"
+
+    TEMPLATES_AUTO_RELOAD = os.getenv("TEMPLATES_AUTO_RELOAD", "true").lower() == "true"
 
 
 class TestingConfig(Config):
