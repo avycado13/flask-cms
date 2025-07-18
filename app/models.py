@@ -1,6 +1,8 @@
+from datetime import datetime
 from app.extensions import db
 import sqlalchemy.orm as so
 from flask_security.models import fsqla_v3 as fsqla
+from authlib.integrations.sqla_oauth2 import OAuth2ClientMixin, OAuth2TokenMixin
 from flask_security import UserMixin, RoleMixin
 import secrets
 from hashlib import md5
@@ -76,75 +78,96 @@ blog_followers = db.Table(
 )
 
 
+class Client(db.Model, OAuth2ClientMixin):
+    id = so.mapped_column(sa.Integer, primary_key=True)
+    user_id = so.mapped_column(sa.Integer, sa.ForeignKey("user.id", ondelete="CASCADE"))
+    user = so.relationship("User")
+
+
+class Token(db.Model, OAuth2TokenMixin):
+    id = so.mapped_column(sa.Integer, primary_key=True)
+    user_id = so.mapped_column(sa.Integer, db.ForeignKey("user.id", ondelete="CASCADE"))
+    user = so.relationship("User")
+
+
 class Blog(SearchableMixin, db.Model):
     __searchable__ = ["title", "description", "slug", "posts", "pages"]
 
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(150), nullable=False)
-    slug = db.Column(db.String(150), nullable=True)
-    description = db.Column(db.Text, nullable=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    id = so.mapped_column(sa.Integer, primary_key=True)
+    title = so.mapped_column(sa.String(150), nullable=False)
+    slug = so.mapped_column(sa.String(150), nullable=True)
+    description = so.mapped_column(sa.Text, nullable=True)
+    user_id = so.mapped_column(sa.Integer, sa.ForeignKey("user.id"))
 
     author: so.Mapped["User"] = so.relationship("User", back_populates="blogs")
-    posts = db.relationship("Post", back_populates="blog", cascade="all, delete-orphan")
-    pages = db.relationship("Page", back_populates="blog", cascade="all, delete-orphan")
+    posts = so.relationship("Post", back_populates="blog", cascade="all, delete-orphan")
+    pages = so.relationship("Page", back_populates="blog", cascade="all, delete-orphan")
     newsletter = so.mapped_column(sa.Boolean, default=False)
+    css = so.mapped_column(sa.Text, nullable=True)
+    theme_id = so.mapped_column(sa.Integer, sa.ForeignKey("theme.id"), nullable=True)
+    theme = so.relationship("Theme", back_populates="blogs")
 
 
 class Post(SearchableMixin, db.Model):
     __searchable__ = ["title", "content"]
 
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(150), nullable=False)
-    content = db.Column(db.Text, nullable=False)
-    blog_id = db.Column(db.Integer, db.ForeignKey("blog.id"))
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    id = so.mapped_column(sa.Integer, primary_key=True)
+    title = so.mapped_column(sa.String(150), nullable=False)
+    content = so.mapped_column(sa.Text, nullable=False)
+    blog_id = so.mapped_column(sa.Integer, sa.ForeignKey("blog.id"))
+    user_id = so.mapped_column(sa.Integer, sa.ForeignKey("user.id"))
 
-    created_at = db.Column(db.DateTime, default=db.func.now())
-    updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
+    created_at = so.mapped_column(sa.DateTime, default=sa.func.now())
+    updated_at = so.mapped_column(
+        sa.DateTime, default=sa.func.now(), onupdate=sa.func.now()
+    )
 
-    published = db.Column(db.Boolean, default=False)
-    publish_in_newsletter = db.Column(db.Boolean, default=False)
+    published = so.mapped_column(sa.Boolean, default=False)
+    publish_in_newsletter = so.mapped_column(sa.Boolean, default=False)
 
-    blog = db.relationship("Blog", back_populates="posts")
-    author = db.relationship("User", back_populates="posts")
-    comments = db.relationship("Comment", back_populates="post", cascade="all, delete")
+    blog = so.relationship("Blog", back_populates="posts")
+    author = so.relationship("User", back_populates="posts")
+    comments = so.relationship("Comment", back_populates="post", cascade="all, delete")
 
 
 class Page(SearchableMixin, db.Model):
     __searchable__ = ["title", "content"]
 
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(150), nullable=False)
-    content = db.Column(db.Text, nullable=False)
-    blog_id = db.Column(db.Integer, db.ForeignKey("blog.id"))
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    id = so.mapped_column(sa.Integer, primary_key=True)
+    title = so.mapped_column(sa.String(150), nullable=False)
+    content = so.mapped_column(sa.Text, nullable=False)
+    blog_id = so.mapped_column(sa.Integer, sa.ForeignKey("blog.id"))
+    user_id = so.mapped_column(sa.Integer, sa.ForeignKey("user.id"))
 
-    created_at = db.Column(db.DateTime, default=db.func.now())
-    updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
+    created_at = so.mapped_column(sa.DateTime, default=sa.func.now())
+    updated_at = so.mapped_column(
+        sa.DateTime, default=sa.func.now(), onupdate=sa.func.now()
+    )
 
-    published = db.Column(db.Boolean, default=False)
+    published = so.mapped_column(sa.Boolean, default=False)
 
-    blog = db.relationship("Blog", back_populates="pages")
-    author = db.relationship("User", back_populates="pages")
+    blog = so.relationship("Blog", back_populates="pages")
+    author = so.relationship("User", back_populates="pages")
 
 
 class WebAuthn(db.Model, fsqla.FsWebAuthnMixin):
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="CASCADE"))
-    user = db.relationship("User", back_populates="webauthn")
+    user_id = so.mapped_column(sa.Integer, sa.ForeignKey("user.id", ondelete="CASCADE"))
+    user = so.relationship("User", back_populates="webauthn")
 
 
 class Comment(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.Text, nullable=False)
+    id = so.mapped_column(sa.Integer, primary_key=True)
+    content = so.mapped_column(sa.Text, nullable=False)
 
-    created_at = db.Column(db.DateTime, default=db.func.now())
-    updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
+    created_at = so.mapped_column(sa.DateTime, default=sa.func.now())
+    updated_at = so.mapped_column(
+        sa.DateTime, default=sa.func.now(), onupdate=sa.func.now()
+    )
 
-    post_id = db.Column(db.Integer, db.ForeignKey("post.id"))
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    post_id = so.mapped_column(sa.Integer, sa.ForeignKey("post.id"))
+    user_id = so.mapped_column(sa.Integer, sa.ForeignKey("user.id"))
 
-    post = db.relationship("Post", back_populates="comments")
+    post = so.relationship("Post", back_populates="comments")
     # user = db.relationship("User", back_populates="comments")
 
 
@@ -153,42 +176,49 @@ class User(db.Model, UserMixin):
 
     @db.declared_attr
     def webauthn(cls):
-        return db.relationship("WebAuthn", back_populates="user", cascade="all, delete")
+        return so.relationship("WebAuthn", back_populates="user", cascade="all, delete")
 
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(255), unique=True, nullable=False)
-    password = db.Column(db.String(255))
-    active = db.Column(db.Boolean(), nullable=False)
-    fs_uniquifier = db.Column(
-        db.String(64),
+    id: so.Mapped[int] = so.mapped_column(sa.Integer, primary_key=True)
+    email: so.Mapped[str] = so.mapped_column(sa.String(255), unique=True, nullable=False)
+    password: so.Mapped[str] = so.mapped_column(sa.String(255))
+    active: so.Mapped[bool] = so.mapped_column(sa.Boolean(), nullable=False)
+    fs_uniquifier: so.Mapped[str] = so.mapped_column(
+        sa.String(64),
         unique=True,
         nullable=False,
         default=lambda: secrets.token_urlsafe(32),
     )
-    fs_webauthn_user_handle = db.Column(db.String(64), unique=True, nullable=True)
-    last_login_at = db.Column(db.DateTime())
-    current_login_at = db.Column(db.DateTime())
-    last_login_ip = db.Column(db.String(100))
-    current_login_ip = db.Column(db.String(100))
-    roles = db.relationship(
+    fs_webauthn_user_handle: so.Mapped[str] = so.mapped_column(
+        sa.String(64), unique=True, nullable=True
+    )
+    last_login_at: so.Mapped[Optional[datetime]] = so.mapped_column(sa.DateTime())
+    current_login_at: so.Mapped[Optional[datetime]] = so.mapped_column(sa.DateTime())
+    last_login_ip: so.Mapped[Optional[str]] = so.mapped_column(sa.String(100))
+    current_login_ip: so.Mapped[Optional[str]] = so.mapped_column(sa.String(100))
+    roles: so.Mapped[list["Role"]] = so.relationship(
         "Role", secondary=roles_users, backref=db.backref("users", lazy="dynamic")
     )
-    comments = db.relationship("Comment", backref="user")
-    blogs = db.relationship("Blog", back_populates="author")
-    posts = db.relationship("Post", back_populates="author")
-    pages = db.relationship("Page", back_populates="author")
-    login_count = db.Column(db.Integer)
-    tf_totp_secret = db.Column(db.String(255), nullable=True)
-    tf_primary_method = db.Column(db.String(255))
-    username = db.Column(db.String(255), unique=True)
+    comments: so.Mapped[list["Comment"]] = so.relationship("Comment", backref="user")
+    blogs: so.Mapped[list["Blog"]] = so.relationship("Blog", back_populates="author")
+    posts: so.Mapped[list["Post"]] = so.relationship("Post", back_populates="author")
+    pages: so.Mapped[list["Page"]] = so.relationship("Page", back_populates="author")
+    login_count: so.Mapped[int] = so.mapped_column(sa.Integer, nullable=True)
+    tf_totp_secret: so.Mapped[Optional[str]] = so.mapped_column(sa.String(255), nullable=True)
+    tf_primary_method: so.Mapped[Optional[str]] = so.mapped_column(sa.String(255))
+    username: so.Mapped[str] = so.mapped_column(sa.String(255), unique=True)
     notifications: so.WriteOnlyMapped["Notification"] = so.relationship(
         back_populates="user"
     )
     tasks: so.WriteOnlyMapped["Task"] = so.relationship(back_populates="user")
+    themes: so.Mapped[list["Theme"]] = so.relationship("Theme", back_populates="user")
+    about_me: so.Mapped[Optional[str]] = so.mapped_column(sa.Text, nullable=True)
+
+    def get_user_id(self):
+        return self.id
 
     def avatar(self, size):
         digest = md5(self.email.lower().encode("utf-8")).hexdigest()
-        return f"https://www.gravatar.com/avatar/{digest}?d=identicon&s={size}"
+        return f"https://www.gravatar.com/avatar/{digest}?d=identicon&s={size}?r=pg"
 
     def add_notification(self, name, data):
         db.session.execute(self.notifications.delete().where(Notification.name == name))
@@ -212,9 +242,9 @@ class User(db.Model, UserMixin):
 
 
 class Role(db.Model, RoleMixin):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), unique=True, nullable=False)
-    description = db.Column(db.String(255))
+    id = so.mapped_column(sa.Integer, primary_key=True)
+    name = so.mapped_column(sa.String(80), unique=True, nullable=False)
+    description = so.mapped_column(sa.String(255))
     # permissions = db.Column(AsaList(db.UnicodeText), nullable=True)
 
 
@@ -250,3 +280,21 @@ class Notification(db.Model):
 
     def get_data(self):
         return json.loads(str(self.payload_json))
+
+
+class Theme(db.Model):
+    id = so.mapped_column(sa.Integer, primary_key=True)
+    name = so.mapped_column(sa.String(255), nullable=False)
+    css = so.mapped_column(sa.Text, nullable=False)
+    user_id = so.mapped_column(sa.Integer, sa.ForeignKey("user.id"))
+    user = so.relationship("User", back_populates="themes")
+    blogs = so.relationship("Blog", back_populates="theme")
+
+    def __repr__(self):
+        return f"<Theme {self.name}>"
+
+
+@sa.event.listens_for(Theme.blogs, "append")
+def receive_append(theme, blog, initiator):
+    # When a blog is added to a theme, set its CSS to match the theme's CSS.
+    blog.css = theme.css

@@ -1,6 +1,16 @@
 import os
 from flask import Flask, request, current_app, send_from_directory
-from app.extensions import db, migrate, csrf, babel, security, moment, mail, dropzone,session
+from app.extensions import (
+    db,
+    migrate,
+    csrf,
+    babel,
+    security,
+    moment,
+    mail,
+    dropzone,
+    session,
+)
 from flask_security import (
     SQLAlchemyUserDatastore,
 )
@@ -25,6 +35,8 @@ def create_app(config_class=Config):
 
     app.config.from_object(config_class)
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.config["DROPZONE_ENABLE_CSRF"] = True
+
     db.init_app(app)
     migrate.init_app(app, db, render_as_batch=True)
     csrf.init_app(app)
@@ -32,9 +44,11 @@ def create_app(config_class=Config):
     babel.init_app(app, locale_selector=get_locale)
     moment.init_app(app)
     dropzone.init_app(app)
+
     user_datastore = SQLAlchemyUserDatastore(db, User, Role, WebAuthn)
     security.init_app(app, user_datastore)
     session.init_app(app)
+
     app.elasticsearch = (
         Elasticsearch(
             [app.config["ELASTICSEARCH_URL"]],
@@ -65,6 +79,15 @@ def create_app(config_class=Config):
     from app.cli import bp as cli_bp
 
     app.register_blueprint(cli_bp)
+
+    from app.api import bp as api_bp
+
+    app.register_blueprint(api_bp)
+
+
+    from app.dash import bp as dash_bp
+
+    app.register_blueprint(dash_bp,url_prefix="/dash")
 
     with app.app_context():
         db.create_all()

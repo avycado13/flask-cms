@@ -1,4 +1,4 @@
-{% macro form_field(field, autofocus) %}
+{% macro form_field(field, autofocus, editor="quilljs") %}
     {%- if field.type == 'BooleanField' %}
         <div class="form-check mb-3">
             {{ field(class='form-check-input') }}
@@ -28,55 +28,71 @@
     {%- elif field.type == 'TinyMCEField' %}
         <div class="mb-3">
             {{ field.label(class='form-label') }}
-            {% if autofocus %}
-                {{ field(class='form-control editor' + (' is-invalid' if field.errors else '') , autofocus=True) }}
-            {% else %}
-                {{ field(class='form-control editor' + (' is-invalid' if field.errors else '') ) }}
+            {% if editor == "quilljs" %}
+                {% if autofocus %}
+                    {{ field(class='form-control editor' + (' is-invalid' if field.errors else '') , autofocus=True) }}
+                {% else %}
+                    {{ field(class='form-control editor' + (' is-invalid' if field.errors else '') ) }}
+                {% endif %}
+                <script>
+                    const quill = new Quill('.editor', {
+                        modules: {
+                            toolbar: [
+                                [{
+                                    'header': [1, 2, 3, 4, 5, 6, false]
+                                }], // Text Size
+                                ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+                                [{
+                                    'list': 'ordered'
+                                }, {
+                                    'list': 'bullet'
+                                }, {
+                                    'list': 'check'
+                                }],
+                                [{
+                                    'indent': '-1'
+                                }, {
+                                    'indent': '+1'
+                                }],
+                                ['link', 'image', 'code-block', 'formula', 'video'],
+                                [{
+                                    'script': 'sub'
+                                }, {
+                                    'script': 'super'
+                                }], // superscript/subscript
+                                ['clean'],
+                            ],
+                        },
+                        theme: 'snow'
+                    });
+                </script>
+            {% elif editor == "TinyMCE" %}
+                {% if autofocus %}
+                    {{ field(class='form-control editor' + (' is-invalid' if field.errors else '') , autofocus=True) }}
+                {% else %}
+                    {{ field(class='form-control editor' + (' is-invalid' if field.errors else '') ) }}
+                {% endif %}
+                <script>
+                    tinymce.init({
+                        selector: '.editor',
+                        license_key: 'gpl',
+                        setup: function(editor) {
+                            editor.on('change', function() {
+                                tinymce.triggerSave(); // Force TinyMCE to update the textarea value
+                            });
+                        },
+                        entity_encoding: "raw", // Ensures TinyMCE saves HTML instead of entities
+                    });
+                </script>
+                <script>
+                    // Prevent Bootstrap dialog from blocking focusin
+                    document.addEventListener('focusin', (e) => {
+                        if (e.target.closest(".tox-tinymce, .tox-tinymce-aux, .moxman-window, .tam-assetmanager-root") !== null) {
+                            e.stopImmediatePropagation();
+                        }
+                    });
+                </script>
             {% endif %}
-            <!-- <script>
-     tinymce.init({
-         selector: '.editor',
-         license_key: 'gpl',
-         setup: function(editor) {
-             editor.on('change', function() {
-                 tinymce.triggerSave(); // Force TinyMCE to update the textarea value
-             });
-         },
-         entity_encoding: "raw", // Ensures TinyMCE saves HTML instead of entities
-     });
- </script> -->
-            <script>
-                const quill = new Quill('.editor', {
-                    modules: {
-                        toolbar: [
-                            [{
-                                'header': [1, 2, 3, 4, 5, 6, false]
-                            }], // Text Size
-                            ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-                            [{
-                                'list': 'ordered'
-                            }, {
-                                'list': 'bullet'
-                            }, {
-                                'list': 'check'
-                            }],
-                            [{
-                                'indent': '-1'
-                            }, {
-                                'indent': '+1'
-                            }],
-                            ['link', 'image', 'code-block','formula','video'],
-                            [{
-                                'script': 'sub'
-                            }, {
-                                'script': 'super'
-                            }], // superscript/subscript
-                            ['clean'],
-                        ],
-                    },
-                    theme: 'snow'
-                });
-            </script>
             {%- for error in field.errors %}<div class="invalid-feedback">{{ error }}</div>{%- endfor %}
         </div>
     {%- elif field.type == 'SubmitField' %}
@@ -102,9 +118,7 @@
         {{ form.csrf_token }}
         {%- for field, errors in form.errors.items() %}
             {%- if form[field].widget.input_type == 'hidden' %}
-                {%- for error in errors %}
-                    <div class="invalid-feedback">{{ error }}</div>
-                {%- endfor %}
+                {%- for error in errors %}<div class="invalid-feedback">{{ error }}</div>{%- endfor %}
             {%- endif %}
         {%- endfor %}
         {% set ns = namespace(first_field=true) %}

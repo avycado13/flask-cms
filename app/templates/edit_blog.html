@@ -15,7 +15,7 @@
             </div>
             <a href="{{ url_for('main.view_blog', blog_id=blog.id) }}"
                class="btn btn-outline-primary mt-3">{{ _("Back to Blog") }}</a>
-            <a href="{{ url_for('main.blog_admin', blog_id=blog.id) }}"
+            <a href="{{ url_for('dashboard.blog_admin', blog_id=blog.id) }}"
                class="btn btn-outline-primary mt-3">{{ _("Back to Admin") }}</a>
         </div>
     </div>

@@ -1,23 +1,31 @@
 {% extends "base.html" %}
 {% from "_macros.html" import downstyle %}
-{% block title %}{{ user.username }} - {{_("About")}}{% endblock %}
+{% block title %}
+    {{ user.username }} - {{ _("About") }}
+{% endblock title %}
 {% block content %}
     <div class="row">
         <div class="col-md-12">
-                <br>
-                <br>
-                <br>
-                <br>
-                <h1>{{ user.username }}</h1>
-                {% if user.last_seen %}<p>{{ _("Last seen on") }}: {{ moment(user.last_seen).format('LLL') }}</p>{% endif %}
-                {% if current_user.is_authenticated %}
-                    {% if user == current_user %}
-                    <p>test</p>
-                    {% endif %}
+            <br>
+            <br>
+            <br>
+            <br>
+            <div class="h-card">
+                <h1 class="p-name p-nickname">
+                    <a class="u-url u-uid" href="{{ url_for('main.view_user', username=user.username) }}">{{ user.username }}</a>
+                </h1>
+                <img class="u-photo rounded-circle" src="{{ user.avatar('200') }}" alt="{{ user.username }}" width="140" height="140">
+                {% if user.about_me %}<p class="p-note">{{ user.about_me }}</p>{% endif %}
+                {% if user.location %}<p class="p-locality">{{ user.location }}</p>{% endif %}
+                {% if user.last_seen %}
+                    <p>
+                        {{ _("Last seen on") }}: <time class="dt-updated" datetime="{{ user.last_seen.isoformat() }}">{{ moment(user.last_seen).format('LLL') }}</time>
+                    </p>
                 {% endif %}
-                <hr />
-                <div class="content"></div>
 
+            </div>
+            <hr />
+            <div class="content"></div>
             <ul class="nav nav-pills">
                 <li class="nav-item">
                     <a class="nav-link active"
@@ -63,7 +71,7 @@
                     {% if all_activity %}
                         {% for action in all_activity %}
                             {% if action.__class__.__name__ == "Post" %}
-                            {% set post = action %}
+                                {% set post = action %}
                                 <div class="card mb-3">
                                     <div class="card-body">
                                         <h2 class="card-title">{{ post.title }}</h2>
@@ -79,53 +87,57 @@
                                             {% if post.content|length > 200 %}...{% endif %}
                                         </p>
                                         <a href="{{ url_for('main.view_post', post_id=post.id) }}"
-                                        class="btn btn-primary">{{ _("Read more") }}</a>
+                                           class="btn btn-primary">{{ _("Read more") }}</a>
                                     </div>
                                 </div>
                             {% elif action.__class__.__name__ == "Comment" %}
-                            {% set comment = action %}
-                            <div class="card mb-3">
-                                <div class="card-body">
-                                    {{ moment(comment.created_at).format('LLL') }}
-                                    {% if comment.updated_at %}
-                                        {% if moment(comment.updated_at).format('LLL') != moment(comment.created_at).format('LLL') %}
-                                            <p>{{ _("Last Updated at") }} {{ moment(comment.updated_at).format('LLL') }}</p>
+                                {% set comment = action %}
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        {{ moment(comment.created_at).format('LLL') }}
+                                        {% if comment.updated_at %}
+                                            {% if moment(comment.updated_at).format('LLL') != moment(comment.created_at).format('LLL') %}
+                                                <p>{{ _("Last Updated at") }} {{ moment(comment.updated_at).format('LLL') }}</p>
+                                            {% endif %}
                                         {% endif %}
-                                    {% endif %}
-                                    <hr />
-                                    <p class="card-text">
-                                        {{ downstyle(comment.content[:200],2) }}
-                                        {% if comment.content|length > 200 %}...{% endif %}
-                                    </p>
-                                    <a href="{{ url_for('main.view_post', post_id=comment.post.id) }}"
-                                       class="btn btn-primary">{{ _("View comment") }}</a>
+                                        <hr />
+                                        <p class="card-text">
+                                            {{ downstyle(comment.content[:200],2) }}
+                                            {% if comment.content|length > 200 %}...{% endif %}
+                                        </p>
+                                        <a href="{{ url_for('main.view_post', post_id=comment.post.id) }}"
+                                           class="btn btn-primary">{{ _("View comment") }}</a>
+                                    </div>
                                 </div>
-                            </div>
                             {% endif %}
                         {% endfor %}
                     {% else %}
                         <p>{{ _("No activity yet.") }}</p>
                     {% endif %}
                 </div>
-                <div class="tab-pane show active" id="pill-posts" role="tabpanel">
+                <div class="tab-pane show active h-feed" id="pill-posts" role="tabpanel">
                     {% if posts %}
                         {% for post in posts %}
-                            <div class="card mb-3">
+                            <div class="card mb-3 h-entry">
                                 <div class="card-body">
-                                    <h2 class="card-title">{{ post.title }}</h2>
-                                    {{ moment(post.created_at).format('LLL') }}
+                                    <h2 class="card-title p-name">{{ post.title }}</h2>
+                                    <p class="dt-published">
+                                        <time datetime="{{ post.created_at.isoformat() }}">{{ moment(post.created_at).format('LLL') }}</time>
+                                    </p>
                                     {% if post.updated_at %}
                                         {% if moment(post.updated_at).format('LLL') != moment(post.created_at).format('LLL') %}
-                                            <p>{{ _("Last Updated at") }} {{ moment(post.updated_at).format('LLL') }}</p>
+                                            <p class="dt-updated">
+                                                <time datetime="{{ post.updated_at.isoformat() }}">{{ _("Last Updated at") }} {{ moment(post.updated_at).format('LLL') }}</time>
+                                            </p>
                                         {% endif %}
                                     {% endif %}
                                     <hr />
-                                    <p class="card-text">
+                                    <p class="p-summary">
                                         {{ downstyle(post.content[:200],2) }}
                                         {% if post.content|length > 200 %}...{% endif %}
                                     </p>
                                     <a href="{{ url_for('main.view_post', post_id=post.id) }}"
-                                       class="btn btn-primary">{{ _("Read more") }}</a>
+                                       class="btn btn-primary u-url">{{ _("Read more") }}</a>
                                 </div>
                             </div>
                         {% endfor %}
@@ -133,24 +145,26 @@
                         <p>{{ _("No posts yet.") }}</p>
                     {% endif %}
                 </div>
-                <div class="tab-pane fade" id="pill-blogs" role="tabpanel">
+                <div class="tab-pane fade h-feed" id="pill-blogs" role="tabpanel">
                     {% if blogs %}
                         {% for blog in blogs %}
-                            <div class="card mb-3">
+                            <div class="card mb-3 h-card">
                                 <div class="card-body">
-                                    <h2 class="card-title">{{ blog.title }}</h2>
+                                    <h2 class="card-title p-name">{{ blog.title }}</h2>
                                     {% if blog.updated_at %}
                                         {% if moment(blog.updated_at).format('LLL') != moment(blog.created_at).format('LLL') %}
-                                            <p>{{ _("Last Updated at") }} {{ moment(blog.updated_at).format('LLL') }}</p>
+                                            <p class="dt-updated">
+                                                <time datetime="{{ blog.updated_at.isoformat() }}">{{ _("Last Updated at") }} {{ moment(blog.updated_at).format('LLL') }}</time>
+                                            </p>
                                         {% endif %}
                                     {% endif %}
                                     <hr />
-                                    <p class="card-text">
+                                    <p class="p-summary">
                                         {{ downstyle(blog.description[:200],2) }}
                                         {% if blog.description|length > 200 %}...{% endif %}
                                     </p>
                                     <a href="{{ url_for('main.view_blog', blog_id=blog.id) }}"
-                                       class="btn btn-primary">{{ _("View more") }}</a>
+                                       class="btn btn-primary u-url">{{ _("View more") }}</a>
                                 </div>
                             </div>
                         {% endfor %}
@@ -158,24 +172,28 @@
                         <p>{{ _("No blogs yet.") }}</p>
                     {% endif %}
                 </div>
-                <div class="tab-pane fade" id="pill-comments" role="tabpanel">
+                <div class="tab-pane fade h-feed" id="pill-comments" role="tabpanel">
                     {% if comments %}
                         {% for comment in comments %}
-                            <div class="card mb-3">
+                            <div class="card mb-3 h-cite">
                                 <div class="card-body">
-                                    {{ moment(comment.created_at).format('LLL') }}
+                                    <p class="dt-published">
+                                        <time datetime="{{ comment.created_at.isoformat() }}">{{ moment(comment.created_at).format('LLL') }}</time>
+                                    </p>
                                     {% if comment.updated_at %}
                                         {% if moment(comment.updated_at).format('LLL') != moment(comment.created_at).format('LLL') %}
-                                            <p>{{ _("Last Updated at") }} {{ moment(comment.updated_at).format('LLL') }}</p>
+                                            <p class="dt-updated">
+                                                <time datetime="{{ comment.updated_at.isoformat() }}">{{ _("Last Updated at") }} {{ moment(comment.updated_at).format('LLL') }}</time>
+                                            </p>
                                         {% endif %}
                                     {% endif %}
                                     <hr />
-                                    <p class="card-text">
+                                    <p class="p-content">
                                         {{ downstyle(comment.content[:200],2) }}
                                         {% if comment.content|length > 200 %}...{% endif %}
                                     </p>
                                     <a href="{{ url_for('main.view_post', post_id=comment.post.id) }}"
-                                       class="btn btn-primary">{{ _("View comment") }}</a>
+                                       class="btn btn-primary u-url">{{ _("View comment") }}</a>
                                 </div>
                             </div>
                         {% endfor %}
@@ -185,4 +203,6 @@
                 </div>
             </div>
         </div>
-    {% endblock %}
+    </div>
+    www
+{% endblock content %}

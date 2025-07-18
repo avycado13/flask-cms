@@ -1,9 +1,13 @@
 {% extends "base.html" %}
 {% from "_macros.html" import downstyle %}
-{% block title %} Home {% endblock title%}
+{% block title %}
+    Home
+{% endblock title %}
 {% block content %}
     <div class="row">
         <h1>Your Feed</h1>
+        <br>
+        <br>
         <div class="col-md-12">
             {% if posts %}
                 {% for post in posts %}
@@ -47,8 +51,7 @@
             {% else %}
                 <p>{{ _("No posts available yet.") }}</p>
             {% endif %}
-            <a href="{{ url_for('main.admin') }}"
-               class="btn btn-success mt-3">{{ _("Go to Admin Panel") }}</a>
+            <a href="{{ url_for('dashboard.dash_index') }}" class="btn btn-success mt-3">{{ _("Go to Admin Panel") }}</a>
         </div>
     </div>
-{% endblock %}
+{% endblock content %}

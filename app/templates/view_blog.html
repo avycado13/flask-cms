@@ -1,21 +1,26 @@
 {% extends "base.html" %}
 {% from "_macros.html" import blog_navbar, downstyle, blog_footer %}
-{% block title %}{{ blog.title }}{% endblock %}
+{% block title %}{{ blog.title }}{% endblock title %}
 {% block content %}
     {{ blog_navbar(blog.id) }}
     <div class="row">
-        <div id="about">
-            <h1>{{ blog.title }}</h1>
-            <p>{{ blog.description }}</p>
-            <p>{{_("Written by")}} <a href="{{ url_for('main.view_user',username=blog.author.username) }}"
-                class="btn btn-link mb-3">{{ blog.author.username }}</a></p>
+        <div id="about" class="h-card">
+            <h1 class="p-name">{{ blog.title }}</h1>
+            <p class="p-summary">{{ blog.description }}</p>
+            <p class="p-author h-card">
+                {{ _("Written by") }} <a href="{{ url_for('main.view_user',username=blog.author.username) }}"
+    class="btn btn-link mb-3 p-name u-url">{{ blog.author.username }}</a>
+            </p>
+            {% if blog.url %}
+                <a class="u-url" href="{{ blog.url }}">{{ blog.url }}</a>
+            {% endif %}
             {% if current_user.is_authenticated %}
                 {% if blog.author == current_user %}
-                    <a href="{{ url_for('main.edit_blog',blog_id=blog.id) }}"
+                    <a href="{{ url_for('dashboard.edit_blog',blog_id=blog.id) }}"
                        class="btn btn-primary">{{ _("Edit Blog") }}</a>
-                    <a href="{{ url_for('main.blog_admin',blog_id=blog.id) }}"
-                       class="btn btn-secondary">{{ _("Go to Admin Panel") }}</a>
-                       <br>
+                    <a href="{{ url_for('dashboard.blog_admin',blog_id=blog.id) }}"
+                       class="btn btn-secondary">{{ _("Go to Dashboard") }}</a>
+                    <br>
                 {% endif %}
             {% endif %}
         </div>
@@ -33,31 +38,36 @@
                             type="button"
                             role="tab"
                             aria-controls="pill-posts"
-                            aria-selected="false">{{_("Posts")}}</button>
+                            aria-selected="false">{{ _("Posts") }}</button>
                 </li>
             </ul>
             <br>
             <hr>
             <br>
             <div class="tab-content" id="pills-tabContent">
-                <div class="tab-pane fade active" id="pill-posts" role="tabpanel">
+                <div class="tab-pane fade active h-feed" id="pill-posts" role="tabpanel">
+
                     {% if posts %}
                         {% for post in posts %}
-                            <div class="card mb-3">
+                            <div class="card mb-3 h-entry">
                                 <div class="card-body">
-                                    <h1 class="card-title">{{ post.title }}</h1>
-                                    <p>
-                                        {{_("By")}} <a href="{{ url_for('main.view_user',username=post.author.username) }}"
-    class="btn btn-link mb-3">{{ post.author.username }}</a>
+                                    <h1 class="card-title p-name">{{ post.title }}</h1>
+                                    <p class="p-author h-card">
+                                        {{ _("By") }} <a href="{{ url_for('main.view_user',username=post.author.username) }}"
+    class="btn btn-link mb-3 p-name u-url">{{ post.author.username }}</a>
                                     </p>
-                                    {{ moment(post.created_at).format('LLL') }}
+                                    <p class="dt-published">
+                                        <time datetime="{{ post.created_at.isoformat() }}">{{ moment(post.created_at).format('LLL') }}</time>
+                                    </p>
                                     {% if post.updated_at %}
                                         {% if moment(post.updated_at).format('LLL') != moment(post.created_at).format('LLL') %}
-                                            <p>{{ _(" Last Updated at") }} {{ moment(post.updated_at).format('LLL') }}</p>
+                                            <p class="dt-updated">
+                                                <time datetime="{{ post.updated_at.isoformat() }}">{{ _(" Last Updated at") }} {{ moment(post.updated_at).format('LLL') }}</time>
+                                            </p>
                                         {% endif %}
                                     {% endif %}
                                     <hr />
-                                    <p class="card-text">
+                                    <p class="card-text p-summary">
                                         {{ downstyle(post.content[:200],1) }}
                                         {% if post.content|length > 200 %}...{% endif %}
                                     </p>
@@ -70,12 +80,12 @@
                             <ul class="pagination">
                                 {% if prev_url %}
                                     <li class="page-item">
-                                        <a class="page-link" href="{{ prev_url }}">{{_("Newer posts")}}</a>
+                                        <a class="page-link" href="{{ prev_url }}" rel="next">{{ _("Newer posts") }}</a>
                                     </li>
                                 {% endif %}
                                 {% if next_url %}
                                     <li class="page-item">
-                                        <a class="page-link" href="{{ next_url }}">{{_("Older posts")}}</a>
+                                        <a class="page-link" href="{{ next_url }}" rel="prev">{{ _("Older posts") }}</a>
                                     </li>
                                 {% endif %}
                             </ul>
@@ -87,5 +97,5 @@
             </div>
         </div>
     </div>
-    {{blog_footer(blog.id)}}
-{% endblock %}
+    {{ blog_footer(blog.id) }}
+{% endblock content %}

@@ -1,26 +1,28 @@
 {% extends "base.html" %}
 {% from "_macros.html" import navbar, downstyle,blog_footer %}
 {% from "bootstrap_wtf.html" import quick_form, form_field %}
-{% block title %} {{ post.title }} - {{ blog.title }} {% endblock title%}
+{% block title %}
+    {{ post.title }} - {{ blog.title }}
+{% endblock title %}
 {% block content %}
     {{ navbar(blog) }}
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-12 h-entry">
             <a href="{{ url_for('main.view_blog',blog_id=blog.id) }}"
                class="btn btn-link mb-3">← {{ _("Back to Blog") }}</a>
-            <h1>{{ post.title }}</h1>
-            <p>
-                By <a href="{{ url_for('main.view_user',username=post.author.username) }}"
+            <h1 class="p-name">{{ post.title }}</h1>
+            <p class="p-author h-card">
+                {{ _("By") }} <a href="{{ url_for('main.view_user',username=post.author.username) }}"
     class="btn btn-link mb-3">{{ post.author.username }}</a>
             </p>
-            {{ moment(post.created_at).format('LLL') }}
+            <p class="dt-published">{{ moment(post.created_at).format('LLL') }}</p>
             {% if post.updated_at %}
                 {% if moment(post.updated_at).format('LLL') != moment(post.created_at).format('LLL') %}
-                    <p>{{ _(" Last Updated at") }} {{ moment(post.updated_at).format('LLL') }}</p>
+                    <p class="dt-updated">{{ _(" Last Updated at") }} {{ moment(post.updated_at).format('LLL') }}</p>
                 {% endif %}
             {% endif %}
             <hr />
-            <div class="content">{{ downstyle(post.content,1) }}</div>
+            <div class="content e-content">{{ downstyle(post.content,1) }}</div>
         </div>
         <br>
         <br>
@@ -40,14 +42,17 @@
             <h3>{{ _("Comments") }}</h3>
             <br>
             <br>
-
             {% if comments %}
                 {% for comment in comments %}
-                    <div class="card mb-3">
+                    <div class="card mb-3 h-cite">
                         <div class="card-body">
-                            <a href="{{ url_for('main.view_user',username=comment.user.username) }}">{{ comment.user.username }}</a>
-                            <p>{{ moment(comment.created_at).format('LLL') }}</p>
-                            <p>{{ comment.content }}</p>
+                            <p class="p-author h-card">
+                                <a href="{{ url_for('main.view_user',username=comment.user.username) }}" class="p-name u-url">{{ comment.user.username }}</a>
+                            </p>
+                            <p class="dt-published">
+                                <time datetime="{{ comment.created_at.isoformat() }}">{{ moment(comment.created_at).format('LLL') }}</time>
+                            </p>
+                            <div class="p-content">{{ comment.content }}</div>
                         </div>
                     </div>
                 {% endfor %}
@@ -56,5 +61,5 @@
             {% endif %}
         </div>
     </div>
-    {{ blog_footer( blog.id ) }}
-{% endblock content%}
+    {{ blog_footer(blog.id) }}
+{% endblock content %}

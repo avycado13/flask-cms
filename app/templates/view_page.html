@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% from "_macros.html" import navbar, downstyle,blog_footer %}
 {% from "bootstrap_wtf.html" import quick_form, form_field %}
-{% block title %} {{ page.title }} - {{ blog.title }} {% endblock title%}
+{% block title %}
+    {{ page.title }} - {{ blog.title }}
+{% endblock title %}
 {% block content %}
     {{ navbar(blog) }}
     <div class="row">
@@ -25,5 +27,5 @@
         <br>
         <br>
     </div>
-    {{ blog_footer( blog.id ) }}
-{% endblock content%}
+    {{ blog_footer(blog.id) }}
+{% endblock content %}
