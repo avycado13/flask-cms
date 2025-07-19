@@ -80,6 +80,7 @@ def explore():
 
 
 @bp.route("/blog/<int:blog_id>")
+@bp.route("/blog/<slug>")
 @bp.route("/", subdomain="<slug>")
 def view_blog(blog_id=None, slug=None):
     if slug:
@@ -96,12 +97,12 @@ def view_blog(blog_id=None, slug=None):
         query, page=page, per_page=current_app.config["POSTS_PER_PAGE"], error_out=False
     )
     next_url = (
-        url_for("view_blog", blog_id=blog_id, page=posts.next_num)
+        url_for("view_blog", blog_id=blog_id, page=posts.next_num, slug=slug)
         if posts.has_next
         else None
     )
     prev_url = (
-        url_for("view_blog", blog_id=blog_id, page=posts.prev_num)
+        url_for("view_blog", blog_id=blog_id, page=posts.prev_num, slug=slug)
         if posts.has_prev
         else None
     )
@@ -118,6 +119,7 @@ def view_blog(blog_id=None, slug=None):
 
 
 @bp.route("/blog/<int:blog_id>/rss.xml")
+@bp.route("/blog/<slug>/rss.xml")
 @bp.route("/rss.xml", subdomain="<slug>")
 def blog_rss(blog_id=None, slug=None):
     if slug:
@@ -132,13 +134,19 @@ def blog_rss(blog_id=None, slug=None):
     )
 
 
-@bp.route("/post/<int:post_id>", methods=["GET", "POST"])
+@bp.route("/post/<slug>/<int:post_id>", methods=["GET", "POST"])
 @bp.route("/post/<int:post_id>", methods=["GET", "POST"], subdomain="<slug>")
 def view_post(post_id: int, slug=None):
-    post = Post.query.get_or_404(post_id)
+    if slug:
+        post = Post.query.filter_by(slug=slug, id=post_id).first_or_404()
+        blog = Blog.query.filter_by(slug=slug).first_or_404()
+        if blog.id != post.blog_id:
+            abort(404, description=_("Post not found in this blog."))
+    else:
+        post = Post.query.get_or_404(post_id)
     comment_form = CommentForm()
-    comments = post.comments
     blog = post.blog
+    comments = post.comments
     if comment_form.validate_on_submit():
         new_comment = Comment(
             user_id=current_user.id,

@@ -179,7 +179,9 @@ class User(db.Model, UserMixin):
         return so.relationship("WebAuthn", back_populates="user", cascade="all, delete")
 
     id: so.Mapped[int] = so.mapped_column(sa.Integer, primary_key=True)
-    email: so.Mapped[str] = so.mapped_column(sa.String(255), unique=True, nullable=False)
+    email: so.Mapped[str] = so.mapped_column(
+        sa.String(255), unique=True, nullable=False
+    )
     password: so.Mapped[str] = so.mapped_column(sa.String(255))
     active: so.Mapped[bool] = so.mapped_column(sa.Boolean(), nullable=False)
     fs_uniquifier: so.Mapped[str] = so.mapped_column(
@@ -203,7 +205,9 @@ class User(db.Model, UserMixin):
     posts: so.Mapped[list["Post"]] = so.relationship("Post", back_populates="author")
     pages: so.Mapped[list["Page"]] = so.relationship("Page", back_populates="author")
     login_count: so.Mapped[int] = so.mapped_column(sa.Integer, nullable=True)
-    tf_totp_secret: so.Mapped[Optional[str]] = so.mapped_column(sa.String(255), nullable=True)
+    tf_totp_secret: so.Mapped[Optional[str]] = so.mapped_column(
+        sa.String(255), nullable=True
+    )
     tf_primary_method: so.Mapped[Optional[str]] = so.mapped_column(sa.String(255))
     username: so.Mapped[str] = so.mapped_column(sa.String(255), unique=True)
     notifications: so.WriteOnlyMapped["Notification"] = so.relationship(
@@ -252,10 +256,13 @@ class Task(db.Model):
     id: so.Mapped[str] = so.mapped_column(sa.String(36), primary_key=True)
     name: so.Mapped[str] = so.mapped_column(sa.String(128), index=True)
     description: so.Mapped[Optional[str]] = so.mapped_column(sa.String(128))
-    user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey("user.id"))
+    user_id: so.Mapped[Optional[int]] = so.mapped_column(
+        sa.ForeignKey("user.id"),
+        nullable=True,  # This makes the foreign key column nullable in the database
+    )
     complete: so.Mapped[bool] = so.mapped_column(default=False)
 
-    user: so.Mapped[User] = so.relationship(back_populates="tasks")
+    user: so.Mapped[Optional[User]] = so.relationship(back_populates="tasks")
 
     def get_rq_job(self):
         try:
@@ -267,6 +274,29 @@ class Task(db.Model):
     def get_progress(self):
         job = self.get_rq_job()
         return job.meta.get("progress", 0) if job is not None else 100
+
+    @classmethod
+    def launch_userless_task(cls, name, description=None, *args, **kwargs):
+        """
+        Mocks the creation and 'launching' of a task without an associated user.
+        In a real application, this would involve queuing a job.
+        """
+        # In a real application, you might enqueue a job here,
+        # and the job ID would be used as the task ID.
+        # For this mock, we'll just create a new Task instance directly.
+        rq_job = current_app.task_queue.enqueue(f"app.{name}", *args, **kwargs)
+
+        # Create a new Task instance with no user_id
+        new_task = cls(
+            id=rq_job.get_id(),
+            name=name,
+            description=description,
+            user_id=None,  # Explicitly set user_id to None
+            complete=False,
+        )
+        # In a real app, you would add this task to the session and commit:
+        db.session.add(new_task)
+        return new_task
 
 
 class Notification(db.Model):
@@ -298,3 +328,37 @@ class Theme(db.Model):
 def receive_append(theme, blog, initiator):
     # When a blog is added to a theme, set its CSS to match the theme's CSS.
     blog.css = theme.css
+
+
+class Webmention(db.Model):
+    id: so.Mapped[int] = so.mapped_column(sa.Integer, primary_key=True)
+    source: so.Mapped[str] = so.mapped_column(
+        sa.String, nullable=False
+    )  # the linking URL
+    target: so.Mapped[str] = so.mapped_column(
+        sa.String, nullable=False
+    )  # your post URL
+    
+    user_id: so.Mapped[Optional[int]] = so.mapped_column(
+        sa.ForeignKey("user.id"), nullable=True
+    )  # optional: if the webmention is associated with a user
+    user: so.Mapped[Optional[User]] = so.relationship(
+        "User", back_populates="webmentions"
+    )
+    # optional: if you want to store the original content of the webmention
+    content: so.Mapped[Optional[str]] = so.mapped_column(sa.Text, nullable=True)
+
+    blog_id: so.Mapped[Optional[int]] = so.mapped_column(
+        sa.ForeignKey("blog.id"), nullable=True
+    )  # optional: if the webmention is associated with a blog
+    blog: so.Mapped[Optional[Blog]] = so.relationship(
+        "Blog", back_populates="webmentions"
+    )
+    # optional: if you want to store the verification status
+    verified: so.Mapped[bool] = so.mapped_column(sa.Boolean, default=False)
+    created_at: so.Mapped[datetime] = so.mapped_column(
+        sa.DateTime, server_default=sa.func.now()
+    )
+    type: so.Mapped[str] = so.mapped_column(
+        sa.String
+    )  # optional: "mention", "reply", "like", "repost", etc.

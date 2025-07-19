@@ -1,9 +1,29 @@
 from app.api import bp
 from app.extensions import db
 from flask import request, abort, jsonify, url_for, current_app
-from app.models import User, Post
+from app.models import User, Post, Task
 import sqlalchemy as sa
+import httpx
+from urllib.parse import urlparse
 
+def is_url(string):
+    try:
+        result = urlparse(string)
+        return all([result.scheme in ('http', 'https'), result.netloc])
+    except:
+        return False
+
+def is_valid_webmention(source, target):
+    try:
+        resp = httpx.get(source, timeout=5)
+        if resp.status_code == 200 and target in resp.text:
+            return True
+    except httpx.HTTPError:
+        return False
+    except httpx.TimeoutException:
+        return False
+    return False
+    
 
 @bp.route("/.well-known/webfinger")
 def webfinger():
@@ -97,7 +117,7 @@ def outbox(username: str):
         if posts_paginated.has_next
         else None
     )
-    posts: list[dict[str, str, list, dict]] = []
+    posts: list[dict] = []
     for post in posts_paginated:
         posts.append(
             {
@@ -140,7 +160,7 @@ def outbox(username: str):
 
 @bp.route("/actors/<string:username>/posts/<int:post_id>/activity")
 def get_activity(username, post_id):
-    user = User.query.filter_by(username=username).first_or_404()
+    user: User = User.query.filter_by(username=username).first_or_404()
     post: Post = Post.query.filter_by(id=post_id, user_id=user.id).first_or_404()
 
     return jsonify(
@@ -163,3 +183,24 @@ def get_activity(username, post_id):
             },
         }
     )
+
+
+@bp.route('/webmention', methods=['POST'])
+def webmention_endpoint():
+    source = request.form.get('source')
+    target = request.form.get('target')
+    if not source or not target:
+        abort(400, "Missing 'source' or 'target' parameters")
+    if not is_url(source) or not is_url(target):
+        abort(400, "Invalid URL format")
+    if urlparse(target).netloc != urlparse(request.host_url).netloc:
+        abort(400, "Target must be on this domain")
+    task = Task.launch_userless_task(
+        "tasks.webmention.process_webmention",
+        source=source,
+        target=target
+    )
+    if not task:
+        abort(500, "Failed to process webmention")
+    return '', 202
+

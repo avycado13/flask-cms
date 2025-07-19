@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% from "_macros.html" import blog_navbar, downstyle, blog_footer %}
-{% block title %}{{ blog.title }}{% endblock title %}
+{% block title %}
+    {{ blog.title }}
+{% endblock title %}
 {% block content %}
     {{ blog_navbar(blog.id) }}
     <div class="row">
@@ -11,9 +13,7 @@
                 {{ _("Written by") }} <a href="{{ url_for('main.view_user',username=blog.author.username) }}"
     class="btn btn-link mb-3 p-name u-url">{{ blog.author.username }}</a>
             </p>
-            {% if blog.url %}
-                <a class="u-url" href="{{ blog.url }}">{{ blog.url }}</a>
-            {% endif %}
+            {% if blog.url %}<a class="u-url" href="{{ blog.url }}">{{ blog.url }}</a>{% endif %}
             {% if current_user.is_authenticated %}
                 {% if blog.author == current_user %}
                     <a href="{{ url_for('dashboard.edit_blog',blog_id=blog.id) }}"
@@ -46,7 +46,6 @@
             <br>
             <div class="tab-content" id="pills-tabContent">
                 <div class="tab-pane fade active h-feed" id="pill-posts" role="tabpanel">
-
                     {% if posts %}
                         {% for post in posts %}
                             <div class="card mb-3 h-entry">
@@ -69,9 +68,15 @@
                                     <hr />
                                     <p class="card-text p-summary">
                                         {{ downstyle(post.content[:200],1) }}
-                                        {% if post.content|length > 200 %}...{% endif %}
+                                        <br />
+                                        {% if post.content|length > 200 %}
+                                            <a href="{{ url_for('main.view_post', post_id=post.id, slug=post.blog.slug) }}"
+                                               class="btn btn-link">
+                                                <span class="text-muted">{{ _("(Click to read more)") }}</span>
+                                            </a>
+                                        {% endif %}
                                     </p>
-                                    <a href="{{ url_for('main.view_post', post_id=post.id) }}"
+                                    <a href="{{ url_for('main.view_post', post_id=post.id, slug=post.blog.slug) }}"
                                        class="btn btn-primary">{{ _("Read more") }}</a>
                                 </div>
                             </div>

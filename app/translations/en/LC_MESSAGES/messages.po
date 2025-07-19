@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-03-17 09:03-0700\n"
+"POT-Creation-Date: 2025-07-19 12:26+0530\n"
 "PO-Revision-Date: 2025-02-20 10:15-0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -26,123 +26,153 @@ msgstr ""
 msgid "Error: the translation service failed."
 msgstr ""
 
-#: app/main/forms.py:35
+#: app/dash/forms.py:35 app/main/forms.py:35
 msgid "This slug is not allowed."
 msgstr ""
 
-#: app/main/forms.py:39 app/main/forms.py:47 app/main/forms.py:61
+#: app/dash/forms.py:39 app/dash/forms.py:48 app/dash/forms.py:69
+#: app/main/forms.py:39 app/main/forms.py:48 app/main/forms.py:69
 msgid "Title"
 msgstr ""
 
-#: app/main/forms.py:40 app/main/forms.py:48
+#: app/dash/forms.py:40 app/dash/forms.py:49 app/main/forms.py:40
+#: app/main/forms.py:49 app/templates/dash/blog/content.html:21
+#: app/templates/dash/blog/content.html:28
+#: app/templates/dash/blog/themes.html:21
 msgid "Content"
 msgstr ""
 
-#: app/main/forms.py:41 app/main/forms.py:49
-msgid "Publish"
-msgstr ""
-
-#: app/main/forms.py:42
+#: app/dash/forms.py:41 app/main/forms.py:41
 msgid "Publish to Newsletter"
 msgstr ""
 
-#: app/main/forms.py:43 app/main/forms.py:50
+#: app/dash/forms.py:42 app/dash/forms.py:50 app/main/forms.py:42
+#: app/main/forms.py:50
+msgid "Published"
+msgstr ""
+
+#: app/dash/forms.py:43 app/main/forms.py:43
 msgid "Save Post"
 msgstr ""
 
-#: app/main/forms.py:54
-msgid "Post ID"
+#: app/dash/forms.py:44 app/main/forms.py:44
+msgid "Save as Draft"
 msgstr ""
 
-#: app/main/forms.py:55 app/main/forms.py:73
+#: app/dash/forms.py:51 app/main/forms.py:51
+msgid "Save Page"
+msgstr ""
+
+#: app/dash/forms.py:55 app/main/forms.py:55
+msgid "Page ID"
+msgstr ""
+
+#: app/dash/forms.py:56 app/dash/forms.py:63 app/dash/forms.py:81
+#: app/main/forms.py:56 app/main/forms.py:63 app/main/forms.py:81
 msgid "View"
 msgstr ""
 
-#: app/main/forms.py:56 app/main/forms.py:74
+#: app/dash/forms.py:57 app/dash/forms.py:64 app/dash/forms.py:82
+#: app/main/forms.py:57 app/main/forms.py:64 app/main/forms.py:82
 msgid "Edit"
 msgstr ""
 
-#: app/main/forms.py:57 app/main/forms.py:75
+#: app/dash/forms.py:58 app/dash/forms.py:65 app/dash/forms.py:83
+#: app/main/forms.py:58 app/main/forms.py:65 app/main/forms.py:83
 msgid "Delete"
 msgstr ""
 
-#: app/main/forms.py:63
+#: app/dash/forms.py:62 app/main/forms.py:62
+msgid "Post ID"
+msgstr ""
+
+#: app/dash/forms.py:71 app/main/forms.py:71
 msgid "URL Slug"
 msgstr ""
 
-#: app/main/forms.py:66
+#: app/dash/forms.py:74 app/main/forms.py:74
 msgid "Description"
 msgstr ""
 
-#: app/main/forms.py:67
+#: app/dash/forms.py:75 app/main/forms.py:75
 msgid "Newsletter"
 msgstr ""
 
-#: app/main/forms.py:68
+#: app/dash/forms.py:76 app/main/forms.py:76
 msgid "Create Blog"
 msgstr ""
 
-#: app/main/forms.py:72
+#: app/dash/forms.py:80 app/main/forms.py:80
 msgid "Blog ID"
 msgstr ""
 
-#: app/main/forms.py:79 app/main/routes.py:456
+#: app/dash/forms.py:87 app/main/forms.py:87 app/main/routes.py:234
 msgid "Search"
 msgstr ""
 
-#: app/main/forms.py:90
+#: app/dash/forms.py:98 app/main/forms.py:98
 msgid "Comment"
 msgstr ""
 
-#: app/main/forms.py:91
+#: app/dash/forms.py:99 app/main/forms.py:99
 msgid "Submit Comment"
 msgstr ""
 
-#: app/main/routes.py:71
-msgid "To get a personalized feed, create an account or login!"
-msgstr ""
-
-#: app/main/routes.py:137 app/main/routes.py:149
-msgid "No front matter"
-msgstr ""
-
-#: app/main/routes.py:189
-msgid "Comment created successfully!"
-msgstr ""
-
-#: app/main/routes.py:259
+#: app/dash/routes.py:85
 msgid "Post created successfully!"
 msgstr ""
 
-#: app/main/routes.py:266 app/main/routes.py:312
+#: app/dash/routes.py:92 app/dash/routes.py:138
 msgid "Page deleted successfully!"
 msgstr ""
 
-#: app/main/routes.py:305
+#: app/dash/routes.py:131
 msgid "Page created successfully!"
 msgstr ""
 
-#: app/main/routes.py:351
+#: app/dash/routes.py:180
 msgid "You don't have access to edit this blog"
 msgstr ""
 
-#: app/main/routes.py:364
+#: app/dash/routes.py:193
 msgid "Post updated successfully!"
 msgstr ""
 
-#: app/main/routes.py:383
+#: app/dash/routes.py:212
 msgid "Blog created successfully!"
 msgstr ""
 
-#: app/main/routes.py:390
+#: app/dash/routes.py:219
 msgid "Blog deleted successfully!"
 msgstr ""
 
-#: app/main/routes.py:416
+#: app/dash/routes.py:245
 msgid "Blog updated successfully!"
 msgstr ""
 
+#: app/dash/routes.py:274
+msgid "Failed to parse markdown"
+msgstr ""
+
+#: app/dash/routes.py:291
+msgid "No front matter"
+msgstr ""
+
+#: app/main/routes.py:72
+msgid "To get a personalized feed, create an account or login!"
+msgstr ""
+
+#: app/main/routes.py:144
+msgid "Post not found in this blog."
+msgstr ""
+
+#: app/main/routes.py:158
+msgid "Comment created successfully!"
+msgstr ""
+
 #: app/templates/_macros.html:18 app/templates/_macros.html:65
+#: app/templates/dash/blog/content.html:13
+#: app/templates/dash/blog/index.html:13 app/templates/dash/blog/themes.html:13
 msgid "Home"
 msgstr ""
 
@@ -158,48 +188,24 @@ msgstr ""
 msgid "Hosted with Flask CMS"
 msgstr ""
 
-#: app/templates/admin.html:3
-msgid "Admin Panel - Flask CMS"
-msgstr ""
-
-#: app/templates/admin.html:7
-msgid "Admin Panel"
-msgstr ""
-
-#: app/templates/admin.html:12
-msgid "Create New Blog"
-msgstr ""
-
-#: app/templates/admin.html:17
-msgid "Existing Blogs"
-msgstr ""
-
-#: app/templates/admin.html:34
-msgid "No blogs created yet."
-msgstr ""
-
-#: app/templates/admin.html:38 app/templates/errors/404.html:10
-#: app/templates/errors/500.html:10
-msgid "Back to Home"
-msgstr ""
-
 #: app/templates/base.html:7
 msgid "Flask CMS"
 msgstr ""
 
-#: app/templates/base.html:64
+#: app/templates/base.html:82
 msgid ""
 "Hey! You&#39;ve Come to a blank page! this will probably get filled in "
 "eventually"
 msgstr ""
 
-#: app/templates/edit_blog.html:3 app/templates/edit_blog.html:7
-#: app/templates/edit_blog.html:12 app/templates/view_blog.html:15
+#: app/templates/dash/blog/index.html:30 app/templates/edit_blog.html:3
+#: app/templates/edit_blog.html:7 app/templates/edit_blog.html:12
+#: app/templates/view_blog.html:20
 msgid "Edit Blog"
 msgstr ""
 
-#: app/templates/edit_blog.html:17 app/templates/view_page.html:10
-#: app/templates/view_post.html:10
+#: app/templates/edit_blog.html:17 app/templates/view_page.html:12
+#: app/templates/view_post.html:12
 msgid "Back to Blog"
 msgstr ""
 
@@ -216,23 +222,26 @@ msgstr ""
 msgid "Back to Post"
 msgstr ""
 
-#: app/templates/email/newsletter.html:25 app/templates/index.html:20
-#: app/templates/view_blog.html:53 app/templates/view_page.html:19
-#: app/templates/view_post.html:19
+#: app/templates/dash/blog/content.html:42
+#: app/templates/dash/blog/content.html:89
+#: app/templates/dash/blog/index.html:85 app/templates/email/newsletter.html:25
+#: app/templates/index.html:24 app/templates/view_blog.html:64
+#: app/templates/view_page.html:21 app/templates/view_post.html:21
 msgid " Last Updated at"
 msgstr ""
 
-#: app/templates/email/newsletter.html:34 app/templates/index.html:29
-#: app/templates/view_blog.html:62 app/templates/view_user.html:71
+#: app/templates/email/newsletter.html:34 app/templates/index.html:33
+#: app/templates/view_blog.html:80 app/templates/view_user.html:90
+#: app/templates/view_user.html:140
 msgid "Read more"
 msgstr ""
 
-#: app/templates/email/newsletter.html:39 app/templates/index.html:48
-#: app/templates/view_blog.html:81
+#: app/templates/email/newsletter.html:39 app/templates/index.html:52
+#: app/templates/view_blog.html:99
 msgid "No posts available yet."
 msgstr ""
 
-#: app/templates/index.html:51 app/templates/view_blog.html:17
+#: app/templates/index.html:54
 msgid "Go to Admin Panel"
 msgstr ""
 
@@ -245,84 +254,193 @@ msgstr ""
 msgid "Found %(count)s results for \"%(query)s\""
 msgstr ""
 
-#: app/templates/search.html:17 app/templates/view_blog.html:70
+#: app/templates/search.html:17 app/templates/view_blog.html:88
 msgid "Newer posts"
 msgstr ""
 
-#: app/templates/search.html:22 app/templates/view_blog.html:75
+#: app/templates/search.html:22 app/templates/view_blog.html:93
 msgid "Older posts"
 msgstr ""
 
-#: app/templates/view_blog.html:10
+#: app/templates/view_blog.html:13
 msgid "Written by"
 msgstr ""
 
-#: app/templates/view_blog.html:33
+#: app/templates/view_blog.html:22
+msgid "Go to Dashboard"
+msgstr ""
+
+#: app/templates/view_blog.html:41
 msgid "Posts"
 msgstr ""
 
-#: app/templates/view_blog.html:47
+#: app/templates/view_blog.html:55 app/templates/view_post.html:15
 msgid "By"
 msgstr ""
 
-#: app/templates/view_post.html:31
+#: app/templates/view_blog.html:75
+msgid "(Click to read more)"
+msgstr ""
+
+#: app/templates/view_post.html:33
 msgid "Add a Comment"
 msgstr ""
 
-#: app/templates/view_post.html:34
+#: app/templates/view_post.html:36
 msgid "Please login to add a comment."
 msgstr ""
 
-#: app/templates/view_post.html:40
+#: app/templates/view_post.html:42
 msgid "Comments"
 msgstr ""
 
-#: app/templates/view_post.html:55 app/templates/view_user.html:126
+#: app/templates/view_post.html:60 app/templates/view_user.html:201
 msgid "No comments yet."
 msgstr ""
 
-#: app/templates/view_user.html:3
+#: app/templates/view_user.html:4
 msgid "About"
 msgstr ""
 
-#: app/templates/view_user.html:12
+#: app/templates/view_user.html:22
 msgid "Last seen on"
 msgstr ""
 
-#: app/templates/view_user.html:62 app/templates/view_user.html:87
-#: app/templates/view_user.html:112
+#: app/templates/view_user.html:81 app/templates/view_user.html:100
+#: app/templates/view_user.html:130 app/templates/view_user.html:157
+#: app/templates/view_user.html:186
 msgid "Last Updated at"
 msgstr ""
 
-#: app/templates/view_user.html:76
-msgid "No posts yet."
-msgstr ""
-
-#: app/templates/view_user.html:96
-msgid "View more"
-msgstr ""
-
-#: app/templates/view_user.html:101
-msgid "No blogs yet."
-msgstr ""
-
-#: app/templates/view_user.html:121
+#: app/templates/view_user.html:109 app/templates/view_user.html:196
 msgid "View comment"
 msgstr ""
 
-#: app/templates/errors/404.html:7
+#: app/templates/view_user.html:115
+msgid "No activity yet."
+msgstr ""
+
+#: app/templates/view_user.html:145
+msgid "No posts yet."
+msgstr ""
+
+#: app/templates/view_user.html:167
+msgid "View more"
+msgstr ""
+
+#: app/templates/view_user.html:172
+msgid "No blogs yet."
+msgstr ""
+
+#: app/templates/dash/account.html:3 app/templates/dash/index.html:3
+msgid "Admin Panel - Flask CMS"
+msgstr ""
+
+#: app/templates/dash/account.html:7 app/templates/dash/index.html:7
+msgid "Admin Panel"
+msgstr ""
+
+#: app/templates/dash/account.html:12 app/templates/dash/index.html:12
+msgid "Create New Blog"
+msgstr ""
+
+#: app/templates/dash/account.html:17 app/templates/dash/index.html:17
+msgid "Existing Blogs"
+msgstr ""
+
+#: app/templates/dash/account.html:34 app/templates/dash/index.html:34
+msgid "No blogs created yet."
+msgstr ""
+
+#: app/templates/dash/account.html:38 app/templates/dash/blog/content.html:126
+#: app/templates/dash/blog/index.html:124
+#: app/templates/dash/blog/themes.html:59 app/templates/dash/index.html:38
+#: app/templates/errors/404.html:9 app/templates/errors/500.html:9
+msgid "Back to Home"
+msgstr ""
+
+#: app/templates/dash/blog/content.html:5
+msgid "Content - "
+msgstr ""
+
+#: app/templates/dash/blog/content.html:17
+#: app/templates/dash/blog/themes.html:17
+msgid "Nav"
+msgstr ""
+
+#: app/templates/dash/blog/content.html:25
+#: app/templates/dash/blog/themes.html:25
+#: app/templates/dash/blog/themes.html:28
+msgid "Themes"
+msgstr ""
+
+#: app/templates/dash/blog/content.html:33
+#: app/templates/dash/blog/index.html:76
+msgid "Existing Posts"
+msgstr ""
+
+#: app/templates/dash/blog/content.html:76
+#: app/templates/dash/blog/index.html:119
+msgid "No posts created yet."
+msgstr ""
+
+#: app/templates/dash/blog/content.html:80
+msgid "Existing Pages"
+msgstr ""
+
+#: app/templates/dash/blog/content.html:111
+msgid "Newer pages"
+msgstr ""
+
+#: app/templates/dash/blog/content.html:116
+msgid "Older pages"
+msgstr ""
+
+#: app/templates/dash/blog/content.html:122
+msgid "No Pages created yet."
+msgstr ""
+
+#: app/templates/dash/blog/index.html:5 app/templates/dash/blog/nav.html:5
+msgid "Dashboard - "
+msgstr ""
+
+#: app/templates/dash/blog/index.html:46
+msgid "Create New Post"
+msgstr ""
+
+#: app/templates/dash/blog/index.html:61
+msgid "Create New Page"
+msgstr ""
+
+#: app/templates/dash/blog/settings.html:5
+msgid "Settings - "
+msgstr ""
+
+#: app/templates/dash/blog/themes.html:5
+msgid "Themes - "
+msgstr ""
+
+#: app/templates/dash/blog/themes.html:49
+msgid "Current"
+msgstr ""
+
+#: app/templates/dash/blog/themes.html:49
+msgid "Select"
+msgstr ""
+
+#: app/templates/errors/404.html:6
 msgid "Page Not Found"
 msgstr ""
 
-#: app/templates/errors/404.html:8
+#: app/templates/errors/404.html:7
 msgid "You might have found a dead link!"
 msgstr ""
 
-#: app/templates/errors/500.html:7
+#: app/templates/errors/500.html:6
 msgid "Internal Server Error"
 msgstr ""
 
-#: app/templates/errors/500.html:8
+#: app/templates/errors/500.html:7
 msgid "Sorry, something went wrong on our end. Please try again later."
 msgstr ""
 
@@ -339,5 +457,8 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "No posts created yet."
+#~ msgstr ""
+
+#~ msgid "Publish"
 #~ msgstr ""
 
