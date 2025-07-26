@@ -29,7 +29,7 @@
                                 {{ downstyle(post.content[:200],1) }}
                                 {% if post.content|length > 200 %}...{% endif %}
                             </p>
-                            <a href="{{ url_for('main.view_post', post_id=post.id) }}"
+                            <a href="{{ url_for('main.view_post', post_id=post.id, slug=post.blog.slug) }}"
                                class="btn btn-primary">{{ _("Read more") }}</a>
                         </div>
                     </div>

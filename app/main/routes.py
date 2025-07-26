@@ -117,7 +117,6 @@ def view_blog(blog_id=None, slug=None):
     )
 
 
-
 @bp.route("/blog/<int:blog_id>/rss.xml")
 @bp.route("/blog/<slug>/rss.xml")
 @bp.route("/rss.xml", subdomain="<slug>")
@@ -138,12 +137,12 @@ def blog_rss(blog_id=None, slug=None):
 @bp.route("/post/<int:post_id>", methods=["GET", "POST"], subdomain="<slug>")
 def view_post(post_id: int, slug=None):
     if slug:
-        post = Post.query.filter_by(slug=slug, id=post_id).first_or_404()
-        blog = Blog.query.filter_by(slug=slug).first_or_404()
+        post: Post = Post.query.filter_by(slug=slug, id=post_id).first_or_404()
+        blog: Blog = Blog.query.filter_by(slug=slug).first_or_404()
         if blog.id != post.blog_id:
             abort(404, description=_("Post not found in this blog."))
-    else:
-        post = Post.query.get_or_404(post_id)
+    else: 
+        post: Post = Post.query.get_or_404(post_id)
     comment_form = CommentForm()
     blog = post.blog
     comments = post.comments
@@ -156,7 +155,7 @@ def view_post(post_id: int, slug=None):
         db.session.add(new_comment)
         db.session.commit()
         flash(_("Comment created successfully!"), "success")
-        return redirect(url_for("main.view_post", post_id=post_id))
+        return redirect(url_for("main.view_post", post_id=post_id, slug=slug or ""))
     return render_template(
         "view_post.html",
         post=post,
@@ -178,7 +177,6 @@ def view_page(page_id: int, slug=None):
         blog=blog,
         current_user=current_user,
     )
-
 
 
 @bp.route("/user/<username>")

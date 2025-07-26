@@ -196,7 +196,7 @@ def webmention_endpoint():
     if urlparse(target).netloc != urlparse(request.host_url).netloc:
         abort(400, "Target must be on this domain")
     task = Task.launch_userless_task(
-        "tasks.webmention.process_webmention",
+        "jobs.webmention.process_webmention",
         source=source,
         target=target
     )

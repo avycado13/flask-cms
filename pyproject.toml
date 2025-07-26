@@ -24,6 +24,7 @@ dependencies = [
     "httpx>=0.28.1",
     "langdetect>=1.0.9",
     "markdown>=3.7",
+    "psycopg2-binary>=2.9.10",
     "python-dotenv>=1.1.1",
     "python-frontmatter>=1.1.0",
     "rq>=2.1.0",

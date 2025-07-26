@@ -10,7 +10,7 @@
   {% for post in posts %}
     <item>
         <title>{{ post.title }}</title>
-        <link>{{url_for('main.view_post',post_id=post.id)}}</link>
+        <link>{{url_for('main.view_post',post_id=post.id, slug=post.blog.slug)}}</link>
         <description>{{ post.content[:200] }}{% if post.content|length > 200 %}...{% endif %}</description>
         <pubDate>{{ post.created_at.strftime("%a, %d %b %Y %T") }} UTC</pubDate>
     </item>

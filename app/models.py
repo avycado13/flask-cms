@@ -65,8 +65,8 @@ fsqla.FsModels.set_db_info(db)
 roles_users = db.Table(
     "roles_users",
     db.Model.metadata,
-    db.Column("user_id", db.Integer(), db.ForeignKey("user.id")),
-    db.Column("role_id", db.Integer(), db.ForeignKey("role.id")),
+    sa.Column("user_id", sa.Integer, sa.ForeignKey("user.id")),
+    sa.Column("role_id", sa.Integer, sa.ForeignKey("role.id")),
     extend_existing=True,
 )
 
@@ -79,55 +79,58 @@ blog_followers = db.Table(
 
 
 class Client(db.Model, OAuth2ClientMixin):
-    id = so.mapped_column(sa.Integer, primary_key=True)
-    user_id = so.mapped_column(sa.Integer, sa.ForeignKey("user.id", ondelete="CASCADE"))
-    user = so.relationship("User")
+    id: so.Mapped[int] = so.mapped_column(sa.Integer, primary_key=True)
+    user_id: so.Mapped[int] = so.mapped_column(sa.Integer, sa.ForeignKey("user.id", ondelete="CASCADE"))
+    user: so.Mapped["User"] = so.relationship("User")
 
 
 class Token(db.Model, OAuth2TokenMixin):
-    id = so.mapped_column(sa.Integer, primary_key=True)
-    user_id = so.mapped_column(sa.Integer, db.ForeignKey("user.id", ondelete="CASCADE"))
-    user = so.relationship("User")
+    id: so.Mapped[int] = so.mapped_column(sa.Integer, primary_key=True)
+    user_id: so.Mapped[int] = so.mapped_column(sa.Integer, db.ForeignKey("user.id", ondelete="CASCADE"))
+    user: so.Mapped["User"] = so.relationship("User")
 
 
 class Blog(SearchableMixin, db.Model):
     __searchable__ = ["title", "description", "slug", "posts", "pages"]
 
-    id = so.mapped_column(sa.Integer, primary_key=True)
-    title = so.mapped_column(sa.String(150), nullable=False)
-    slug = so.mapped_column(sa.String(150), nullable=True)
-    description = so.mapped_column(sa.Text, nullable=True)
-    user_id = so.mapped_column(sa.Integer, sa.ForeignKey("user.id"))
+    id: so.Mapped[int] = so.mapped_column(sa.Integer, primary_key=True)
+    title: so.Mapped[str] = so.mapped_column(sa.String(150), nullable=False)
+    slug: so.Mapped[str] = so.mapped_column(sa.String(150), nullable=True)
+    description: so.Mapped[str] = so.mapped_column(sa.Text, nullable=True)
+    user_id: so.Mapped[int] = so.mapped_column(sa.Integer, sa.ForeignKey("user.id"))
 
     author: so.Mapped["User"] = so.relationship("User", back_populates="blogs")
-    posts = so.relationship("Post", back_populates="blog", cascade="all, delete-orphan")
-    pages = so.relationship("Page", back_populates="blog", cascade="all, delete-orphan")
-    newsletter = so.mapped_column(sa.Boolean, default=False)
-    css = so.mapped_column(sa.Text, nullable=True)
-    theme_id = so.mapped_column(sa.Integer, sa.ForeignKey("theme.id"), nullable=True)
-    theme = so.relationship("Theme", back_populates="blogs")
+    posts: so.Mapped[list["Post"]] = so.relationship("Post", back_populates="blog", cascade="all, delete-orphan")
+    pages: so.Mapped[list["Page"]] = so.relationship("Page", back_populates="blog", cascade="all, delete-orphan")
+    newsletter: so.Mapped[bool] = so.mapped_column(sa.Boolean, default=False)
+    css: so.Mapped[str] = so.mapped_column(sa.Text, nullable=True)
+    theme_id: so.Mapped[int] = so.mapped_column(sa.Integer, sa.ForeignKey("theme.id"), nullable=True)
+    theme: so.Mapped["Theme"] = so.relationship("Theme", back_populates="blogs")
+    webmentions: so.Mapped[list["Webmention"]] = so.relationship(
+        "Webmention", back_populates="blog"
+    )
 
 
 class Post(SearchableMixin, db.Model):
     __searchable__ = ["title", "content"]
 
-    id = so.mapped_column(sa.Integer, primary_key=True)
-    title = so.mapped_column(sa.String(150), nullable=False)
-    content = so.mapped_column(sa.Text, nullable=False)
-    blog_id = so.mapped_column(sa.Integer, sa.ForeignKey("blog.id"))
-    user_id = so.mapped_column(sa.Integer, sa.ForeignKey("user.id"))
+    id: so.Mapped[int] = so.mapped_column(sa.Integer, primary_key=True)
+    title: so.Mapped[str] = so.mapped_column(sa.String(150), nullable=False)
+    content: so.Mapped[str] = so.mapped_column(sa.Text, nullable=False)
+    blog_id: so.Mapped[int] = so.mapped_column(sa.Integer, sa.ForeignKey("blog.id"))
+    user_id: so.Mapped[int] = so.mapped_column(sa.Integer, sa.ForeignKey("user.id"))
 
-    created_at = so.mapped_column(sa.DateTime, default=sa.func.now())
-    updated_at = so.mapped_column(
+    created_at: so.Mapped[datetime] = so.mapped_column(sa.DateTime, default=sa.func.now())
+    updated_at: so.Mapped[datetime] = so.mapped_column(
         sa.DateTime, default=sa.func.now(), onupdate=sa.func.now()
     )
     language: so.Mapped[Optional[str]] = so.mapped_column(sa.String(5))
-    published = so.mapped_column(sa.Boolean, default=False)
-    publish_in_newsletter = so.mapped_column(sa.Boolean, default=False)
+    published: so.Mapped[bool] = so.mapped_column(sa.Boolean, default=False)
+    publish_in_newsletter: so.Mapped[bool] = so.mapped_column(sa.Boolean, default=False)
 
-    blog = so.relationship("Blog", back_populates="posts")
-    author = so.relationship("User", back_populates="posts")
-    comments = so.relationship("Comment", back_populates="post", cascade="all, delete")
+    blog: so.Mapped["Blog"] = so.relationship("Blog", back_populates="posts")
+    author: so.Mapped["User"] = so.relationship("User", back_populates="posts")
+    comments: so.Mapped[list["Comment"]] = so.relationship("Comment", back_populates="post", cascade="all, delete")
 
 
 class Page(SearchableMixin, db.Model):
@@ -204,6 +207,12 @@ class User(db.Model, UserMixin):
     blogs: so.Mapped[list["Blog"]] = so.relationship("Blog", back_populates="author")
     posts: so.Mapped[list["Post"]] = so.relationship("Post", back_populates="author")
     pages: so.Mapped[list["Page"]] = so.relationship("Page", back_populates="author")
+    webmentions: so.Mapped[list["Webmention"]] = so.relationship(
+        "Webmention", back_populates="user"
+    )
+    chirps: so.Mapped[list["Chirp"]] = so.relationship(
+        "Chirp", back_populates="user"
+    )
     login_count: so.Mapped[int] = so.mapped_column(sa.Integer, nullable=True)
     tf_totp_secret: so.Mapped[Optional[str]] = so.mapped_column(
         sa.String(255), nullable=True
@@ -338,7 +347,7 @@ class Webmention(db.Model):
     target: so.Mapped[str] = so.mapped_column(
         sa.String, nullable=False
     )  # your post URL
-    
+
     user_id: so.Mapped[Optional[int]] = so.mapped_column(
         sa.ForeignKey("user.id"), nullable=True
     )  # optional: if the webmention is associated with a user
@@ -362,3 +371,13 @@ class Webmention(db.Model):
     type: so.Mapped[str] = so.mapped_column(
         sa.String
     )  # optional: "mention", "reply", "like", "repost", etc.
+
+
+class Chirp(db.Model):
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey("user.id"))
+    content: so.Mapped[str] = so.mapped_column(sa.Text, nullable=False)
+    created_at: so.Mapped[datetime] = so.mapped_column(
+        sa.DateTime, server_default=sa.func.now()
+    )
+    user: so.Mapped[User] = so.relationship("User", back_populates="chirps")
